@@ -1,9 +1,10 @@
-package com.Filmix.pelicula;
+package com.Filmix.pregunta;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.Filmix.categoria.Categoria;
+import com.Filmix.pelicula.Pelicula;
+import com.Filmix.respuesta.Respuesta;
 import com.Filmix.valoracion.Valoracion;
 
 import jakarta.persistence.CascadeType;
@@ -11,6 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -21,21 +24,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-public class Pelicula {
+public class Pregunta {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private String nombre;
-	private String sinopsis;
+	private String frase;
 	
-	
-	@OneToMany(mappedBy = "pelicula", cascade = CascadeType.ALL, orphanRemoval = true)
-	List<Valoracion> listaValoraciones = new ArrayList<>();
-	
-	@ManyToMany(mappedBy="listaPeliculas")
-	
-	private List<Categoria> listaCategorias = new ArrayList<>();
+	@OneToMany(mappedBy="pregunta")
+	private List<Respuesta> listaRespuestas = new ArrayList<>();
+
+
 	
 
 }

@@ -1,15 +1,19 @@
-package com.Filmix.valoracion;
+package com.Filmix.usuario;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.Filmix.pelicula.Pelicula;
-import com.Filmix.reseña.Reseña;
-import com.Filmix.usuario.Usuario;
+import com.Filmix.valoracion.Valoracion;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,23 +23,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-public class Valoracion {
+public class Usuario {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private double nota;
-	
-	@ManyToOne(optional = false)
-    @JoinColumn(name = "pelicula_id")
-    private Pelicula pelicula;
-	
-	@OneToOne(mappedBy = "valoracion", optional = true)
-    private Reseña reseña;
-	
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "usuario_id")
-	private Usuario usuario;
+	private String nombre;
+	private String correo;
 
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+	List<Valoracion> listaValoraciones = new ArrayList<>();
 
 }

@@ -1,8 +1,7 @@
-package com.Filmix.valoracion;
+package com.Filmix.reseña;
 
 import com.Filmix.pelicula.Pelicula;
-import com.Filmix.reseña.Reseña;
-import com.Filmix.usuario.Usuario;
+import com.Filmix.valoracion.Valoracion;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,23 +18,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
-public class Valoracion {
+public class Reseña {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private double nota;
+	private String comentario;
 	
-	@ManyToOne(optional = false)
-    @JoinColumn(name = "pelicula_id")
-    private Pelicula pelicula;
+	@OneToOne
+	@JoinColumn(name="valoracion_id")
+	public Valoracion valoracion;
 	
-	@OneToOne(mappedBy = "valoracion", optional = true)
-    private Reseña reseña;
-	
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "usuario_id")
-	private Usuario usuario;
+
 
 
 }
