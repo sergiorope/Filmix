@@ -6,11 +6,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.Filmix.categoria.Categoria;
 import com.Filmix.categoria.CategoriaRespository;
 
 @Service
@@ -19,19 +21,29 @@ public class PeliculaService {
 	@Autowired
 	PeliculaRepository pr;
 
-	public List<Pelicula> obtenerPeliculas() {
+	public List<PeliculaDTO> obtenerPeliculas() {
 
-		return pr.findAll();
-
-	}
-
-	public List<Pelicula> obtenerPeliculasPorCategoria(int id) {
-
-		return pr.peliculaPorCategoria(id);
+		List<Pelicula> listaPeliculas = pr.findAll();
+		
+		return listaPeliculas.stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
 
 	}
 
-	public List<Pelicula> obtenerPeliculasRecomendadas(List<Integer> ids) {
+	public List<PeliculaDTO> obtenerPeliculasPorCategoria(int id) {
+
+		
+				
+				List<Pelicula> pelicula =pr.peliculaPorCategoria(id);
+				
+				return pelicula.stream()
+		                .map(this::convertirADTO)
+		                .collect(Collectors.toList());
+
+	}
+
+	public List<PeliculaDTO> obtenerPeliculasRecomendadas(List<Integer> ids) {
 
 		HashMap<Integer, Integer> map = new HashMap<>();
 
@@ -42,10 +54,53 @@ public class PeliculaService {
 				.entrySet()
 				.stream()
 				.max(Map.Entry.comparingByValue())
-				.map(Map.Entry::getKey).orElseThrow();
+				.map(Map.Entry::getValue).orElseThrow();
+		
+		System.out.println(k);
+		
 
-		return pr.peliculaPorCategoria(k);
+		List<Integer> keys= map.entrySet()
+		.stream()
+		.filter(e -> e.getValue().equals(k))
+		.map(Map.Entry::getKey)
+		.collect(Collectors.toList());
+		
+		System.out.println(ids);
+		System.out.println(keys);
+		System.out.println(map);
+		
+	    List<Pelicula> peliculas = pr.peliculasPorCategoriaRecomendada(keys);
+	    
+	    
+
+
+		return peliculas.stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
 
 	}
+	
+	private PeliculaDTO convertirADTO(Pelicula pelicula) {
+	    List<String> nombresCategorias = pelicula.getListaCategorias()
+	                                            .stream()
+	                                            .map(Categoria::getNombre)
+	                                            .collect(Collectors.toList());
+
+	    List<String> resumenValoraciones = pelicula.getListaValoraciones()
+	                                              .stream()
+	                                              .map(v -> "Puntaje: " + v.getNota()) 
+	                                              .collect(Collectors.toList());
+
+	    return new PeliculaDTO(
+	        pelicula.getId(),
+	        pelicula.getNombre(),
+	        pelicula.getSinopsis(),
+	        pelicula.getImagen(),
+	        nombresCategorias,
+	        resumenValoraciones
+	    );
+	}
+
+
 
 }

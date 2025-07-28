@@ -20,24 +20,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-public class Pelicula {
+public class PeliculaDTO {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String nombre;
-	private String sinopsis;
+	private String sinopsis; 
 	private String imagen;
-	
-	
-	@OneToMany(mappedBy = "pelicula", cascade = CascadeType.ALL, orphanRemoval = true)
-	List<Valoracion> listaValoraciones = new ArrayList<>();
-	
-	
-	@ManyToMany(mappedBy="listaPeliculas")
-	
-	private List<Categoria> listaCategorias = new ArrayList<>();
+
+	private List<String> listaCategorias = new ArrayList<>();
+	private List<String> listaValoraciones = new ArrayList<>();
+
 	
 
 }

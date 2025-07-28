@@ -20,9 +20,9 @@ public class PeliculaController {
 	PeliculaService ps;
 
 	@GetMapping("/obtenerPeliculas")
-	public ResponseEntity<List<Pelicula>> obtenerPeliculas() {
+	public ResponseEntity<List<PeliculaDTO>> obtenerPeliculas() {
 
-		List<Pelicula> listaPeliculas = ps.obtenerPeliculas();
+		List<PeliculaDTO> listaPeliculas = ps.obtenerPeliculas();
 
 		if (listaPeliculas.isEmpty()) {
 
@@ -35,18 +35,16 @@ public class PeliculaController {
 	}
 
 	@GetMapping("/obtenerPeliculasRecomendada")
-	public ResponseEntity<List<Pelicula>> obtenerPeliculasRecomendada(@RequestParam List<Integer> ids) {
+	public ResponseEntity<List<PeliculaDTO>> obtenerPeliculasRecomendada(@RequestParam List<Integer> ids) {
+	    System.out.println("IDs recibidos: " + ids);
+	    List<PeliculaDTO> listaPeliculas = ps.obtenerPeliculasRecomendadas(ids);
 
-		List<Pelicula> listaPeliculas = ps.obtenerPeliculasRecomendadas(ids);
-
-		if (listaPeliculas.isEmpty()) {
-
-			return ResponseEntity.notFound().build();
-		} else {
-
-			return ResponseEntity.ok(listaPeliculas);
-		}
-
+	    if (listaPeliculas.isEmpty()) {
+	        return ResponseEntity.notFound().build();
+	    } else {
+	        return ResponseEntity.ok(listaPeliculas);
+	    }
 	}
+
 
 }

@@ -39,6 +39,7 @@ public class Categoria {
     )
 	private List<Pelicula> listaPeliculas = new ArrayList<>();
 	
+	
 	@ManyToMany(mappedBy="listaCategorias")
 	
 	private List<Respuesta> listaRespuestas = new ArrayList<>();
