@@ -1,5 +1,6 @@
 package com.Filmix.pelicula;
 
+import java.awt.print.Pageable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.Filmix.categoria.Categoria;
@@ -69,7 +71,7 @@ public class PeliculaService {
 		System.out.println(keys);
 		System.out.println(map);
 		
-	    List<Pelicula> peliculas = pr.peliculasPorCategoriaRecomendada(keys);
+	    List<Pelicula> peliculas = pr.peliculasPorCategoriaRecomendada(keys , PageRequest.of(0, 1));
 	    
 	    
 

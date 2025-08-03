@@ -2,7 +2,7 @@ package com.Filmix.pregunta;
 
 import java.util.List;
 
-import com.Filmix.respuesta.Respuesta;
+import com.Filmix.respuesta.RespuestaDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +16,6 @@ public class PreguntaDTO {
 
 	private int id;
 	private String frase;
-	private List<String> listaRespuestas;
+	private List<RespuestaDTO> listaRespuestas;
 
 }

@@ -42,6 +42,7 @@ const getPeliculas = async () => {
 
       const desc = document.createElement('p');
       desc.textContent = pelicula.sinopsis || 'Sin descripción';
+      desc.className = "descripcion"
 
       const linkWrapper = document.createElement('div');
       linkWrapper.className = 'wrapper';
@@ -63,7 +64,6 @@ const getPeliculas = async () => {
       li.appendChild(desc);
       li.appendChild(linkWrapper);
 
-      console.log(pelicula.sinopsis);
 
       movies.appendChild(li);
     });
