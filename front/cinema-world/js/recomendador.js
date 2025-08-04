@@ -129,19 +129,19 @@ async function crearModal() {
 
   const btnPrev = document.createElement("button");
   btnPrev.type = "button";
-  btnPrev.className = "btn btn-success";
+  btnPrev.className = "btn btn-dark";
   btnPrev.textContent = "Previous";
   btnPrev.disabled = true;
   btnPrev.style.margin = "5px";
 
   const btnNext = document.createElement("button");
   btnNext.type = "button";
-  btnNext.className = "btn btn-success";
+  btnNext.className = "btn btn-dark";
   btnNext.textContent = "Next";
 
   const btnFinish = document.createElement("button");
   btnFinish.type = "button";
-  btnFinish.className = "btn btn-success";
+  btnFinish.className = "btn btn-dark ";
   btnFinish.textContent = "Finish";
   btnFinish.disabled = true;
 
@@ -222,7 +222,7 @@ async function crearModalPelicula(pelicula) {
   closeModal.textContent = "×";
 
     const movies = document.createElement("ul");
-  movies.className = "movies-list"; // para estilos si quieres
+  movies.className = "movies-list"; 
 
   pelicula.forEach((e) => {
     const li = document.createElement("li");
@@ -253,13 +253,13 @@ async function crearModalPelicula(pelicula) {
     a.appendChild(span1);
     linkWrapper.appendChild(a);
 
-    // Añadimos todo al li
+
     li.appendChild(title);
     li.appendChild(img);
     li.appendChild(desc);
     li.appendChild(linkWrapper);
 
-    // Añadimos el li a la lista
+  
     movies.appendChild(li);
   });
 

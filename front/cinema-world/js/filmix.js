@@ -38,7 +38,8 @@ const getPeliculas = async () => {
 
       const img = document.createElement('img');
       img.src = pelicula.imagen || 'images/default.jpg';
-      img.style.width = "50%"
+      img.style.width = "50%";
+
 
       const desc = document.createElement('p');
       desc.textContent = pelicula.sinopsis || 'Sin descripción';

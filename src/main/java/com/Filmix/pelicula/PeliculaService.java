@@ -71,7 +71,7 @@ public class PeliculaService {
 		System.out.println(keys);
 		System.out.println(map);
 		
-	    List<Pelicula> peliculas = pr.peliculasPorCategoriaRecomendada(keys , PageRequest.of(0, 1));
+	    List<Pelicula> peliculas = pr.peliculasPorCategoriaRecomendada(keys , PageRequest.of(0, 2));
 	    
 	    
 
