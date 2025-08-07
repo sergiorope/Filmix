@@ -30,6 +30,7 @@ public class Usuario {
 	private int id;
 	private String nombre;
 	private String correo;
+	private String password;
 
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
 	List<Valoracion> listaValoraciones = new ArrayList<>();

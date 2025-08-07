@@ -242,16 +242,7 @@ async function crearModalPelicula(pelicula) {
     const linkWrapper = document.createElement("div");
     linkWrapper.className = "wrapper";
 
-    const a = document.createElement("a");
-    a.href = "#";
-    a.className = "link2";
-
-    const span1 = document.createElement("span");
-   
-
-
-    a.appendChild(span1);
-    linkWrapper.appendChild(a);
+  
 
 
     li.appendChild(title);
