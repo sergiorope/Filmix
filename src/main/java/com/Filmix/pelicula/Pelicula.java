@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.Filmix.categoria.Categoria;
+import com.Filmix.lista.Lista;
 import com.Filmix.valoracion.Valoracion;
 
 import jakarta.persistence.CascadeType;
@@ -11,6 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -38,6 +41,9 @@ public class Pelicula {
 	@ManyToMany(mappedBy="listaPeliculas")
 	
 	private List<Categoria> listaCategorias = new ArrayList<>();
+	
+	@ManyToMany(mappedBy="listaPeliculas")
+	private List<Lista> listaListas = new ArrayList<>();
 	
 
 }

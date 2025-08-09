@@ -1,38 +1,89 @@
 package com.Filmix.usuario;
 
-import java.util.List;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.Filmix.valoracion.Valoracion;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 
 @Service
 public class UsuarioService {
 
 	@Autowired
 	UsuarioRepository ur;
+	
 
-	public UsuarioDTO login(String correo) throws Exception {
+	@Value("${security.jwt.secret-key}")
+	private String key;
+	
+	
+	@Value("${security.jwt.expiration-time}")
+	private long time;
+	
 
-		Usuario u = ur.findByEmail(correo);
+
+	public String login(String correo, String password)  {
 		
-		return convertToDTO(u);
+		Usuario u=ur.findByEmail(correo);
+		
+		if (!u.getPassword().equals(password)) {
+		    throw new RuntimeException("Error la contraseña es incorrecta");
+		}
+
+		return generateToken(convertToDTO(u));
+
+		
+		
 
 	}
+	
+public String ola()  {
+		
+	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	String username = (String) authentication.getPrincipal();
+
+	return username;
+		
+		
+
+	}
+	
 
 	private UsuarioDTO convertToDTO(Usuario u) {
 
-		List<Double> listaValoraciones = u.getListaValoraciones()
-				.stream().map(Valoracion::getNota)
-				.toList();
+
 
 		return new UsuarioDTO(u.getId(), 
 				u.getNombre(), 
 				u.getCorreo(), 
-				u.getPassword(), 
-				listaValoraciones);
+				u.getPassword());
 
 	}
+
+	
+	private String generateToken(UsuarioDTO usuario) {
+		Date expirationDate = new Date(System.currentTimeMillis() + time);
+		
+		
+        return Jwts.builder()
+                .setSubject(usuario.getCorreo())
+                .claim("nombre",usuario.getNombre())
+                .claim("id",usuario.getId())
+                .setIssuedAt(new Date())
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS256, key)
+                .compact();
+    }
+	
+
+
+
 
 }
