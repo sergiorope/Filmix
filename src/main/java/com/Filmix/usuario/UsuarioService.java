@@ -12,78 +12,42 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-
 @Service
 public class UsuarioService {
 
 	@Autowired
 	UsuarioRepository ur;
-	
 
 	@Value("${security.jwt.secret-key}")
 	private String key;
-	
-	
+
 	@Value("${security.jwt.expiration-time}")
 	private long time;
-	
 
+	public String login(String correo, String password) {
 
-	public String login(String correo, String password)  {
-		
-		Usuario u=ur.findByEmail(correo);
-		
+		Usuario u = ur.findByEmail(correo);
+
 		if (!u.getPassword().equals(password)) {
-		    throw new RuntimeException("Error la contraseña es incorrecta");
+			throw new RuntimeException("Error la contraseña es incorrecta");
 		}
 
 		return generateToken(convertToDTO(u));
 
-		
-		
-
 	}
-	
-public String ola()  {
-		
-	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	String username = (String) authentication.getPrincipal();
-
-	return username;
-		
-		
-
-	}
-	
 
 	private UsuarioDTO convertToDTO(Usuario u) {
 
-
-
-		return new UsuarioDTO(u.getId(), 
-				u.getNombre(), 
-				u.getCorreo(), 
-				u.getPassword());
+		return new UsuarioDTO(u.getId(), u.getNombre(), u.getCorreo(), u.getPassword());
 
 	}
 
-	
 	private String generateToken(UsuarioDTO usuario) {
 		Date expirationDate = new Date(System.currentTimeMillis() + time);
-		
-		
-        return Jwts.builder()
-                .setSubject(usuario.getCorreo())
-                .claim("nombre",usuario.getNombre())
-                .claim("id",usuario.getId())
-                .setIssuedAt(new Date())
-                .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS256, key)
-                .compact();
-    }
-	
 
-
-
+		return Jwts.builder().setSubject(usuario.getCorreo()).claim("nombre", usuario.getNombre())
+				.claim("id", usuario.getId()).setIssuedAt(new Date()).setExpiration(expirationDate)
+				.signWith(SignatureAlgorithm.HS256, key).compact();
+	}
 
 }

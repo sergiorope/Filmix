@@ -22,9 +22,6 @@ public class UsuarioController {
 	    return us.login(correo, password);
 	}
 	
-	@GetMapping("/ola")
-	public String ola() {
-	    return us.ola();
-	}
+	
 
 }

@@ -270,5 +270,13 @@ async function crearModalPelicula(pelicula) {
 const btn = document.querySelector(".link1");
 btn.addEventListener("click", async (e) => {
   e.preventDefault();
+
+  if(sessionStorage == null){
+
+    window.location.href = "http://www.w3schools.com";
+  }else {
   await crearModal();
+
+  }
+
 });

@@ -3,6 +3,7 @@ package com.Filmix.lista;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +18,18 @@ public class ListaController {
 
 	@Autowired
 	ListaService ls;
+	
+	@GetMapping("/obtenerLista")
+	public List<ListaDTO> obtenerLista() {
 
-	@PostMapping("/addPeliculas")
+		return ls.obtenerLista();
+
+	}
+
+	@PostMapping("/addPeliculasToList")
 	public ListaDTO addPeliculas(@RequestParam List<Integer> peliculasIds) {
 
-		return ls.addPeliculasLista(peliculasIds);
+		return ls.addPeliculasToList(peliculasIds);
 
 	}
 

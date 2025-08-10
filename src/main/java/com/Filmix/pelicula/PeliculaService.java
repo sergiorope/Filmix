@@ -37,46 +37,45 @@ public class PeliculaService {
 
 		
 				
-				List<Pelicula> pelicula =pr.peliculaPorCategoria(id);
+				return pr.peliculaPorCategoria(id)
+						.stream()
+						.map(this::convertirADTO)
+						.collect(Collectors.toList());
 				
-				return pelicula.stream()
-		                .map(this::convertirADTO)
-		                .collect(Collectors.toList());
+				
 
 	}
 
 	public List<PeliculaDTO> obtenerPeliculasRecomendadas(List<Integer> ids) {
 
-		HashMap<Integer, Integer> map = new HashMap<>();
+		HashMap<Integer, Integer> mapaPeliculasMasRepetidas = new HashMap<>();
 
 		ids.stream()
-		.forEach(i -> map.put(i, map.getOrDefault(i, 0) + 1));
+		.forEach(i -> mapaPeliculasMasRepetidas.put(i, mapaPeliculasMasRepetidas.getOrDefault(i, 0) + 1));
 
-		int k = map
+		int valorPeliculaMasRepetida = mapaPeliculasMasRepetidas
 				.entrySet()
 				.stream()
 				.max(Map.Entry.comparingByValue())
 				.map(Map.Entry::getValue).orElseThrow();
 		
-		System.out.println(k);
+
 		
 
-		List<Integer> keys= map.entrySet()
+		List<Integer> clavePeliculaMasRepetida= mapaPeliculasMasRepetidas.entrySet()
 		.stream()
-		.filter(e -> e.getValue().equals(k))
+		.filter(e -> e.getValue().equals(valorPeliculaMasRepetida))
 		.map(Map.Entry::getKey)
 		.collect(Collectors.toList());
 		
-		System.out.println(ids);
-		System.out.println(keys);
-		System.out.println(map);
-		
-	    List<Pelicula> peliculas = pr.peliculasPorCategoriaRecomendada(keys , PageRequest.of(0, 2));
+
+
 	    
 	    
 
 
-		return peliculas.stream()
+		return pr.peliculasPorCategoriaRecomendada(clavePeliculaMasRepetida , PageRequest.of(0, 2))
+				.stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
 

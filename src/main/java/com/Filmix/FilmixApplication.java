@@ -50,7 +50,10 @@ public class FilmixApplication {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/usuario/login").permitAll()
-                .requestMatchers("/usuario/ola").permitAll()
+                .requestMatchers("/pelicula/obtenerPeliculas").permitAll()
+                .requestMatchers("/graphiql").permitAll()
+                .requestMatchers("/graphql").permitAll()
+
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

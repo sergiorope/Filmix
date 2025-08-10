@@ -20,62 +20,60 @@ public class ListaService {
 
 	@Autowired
 	ListaRepository lr;
-	
+
 	@Autowired
 	UsuarioRepository ur;
-	
+
 	@Autowired
 	PeliculaRepository pr;
 	
 	
-	public ListaDTO addPeliculasLista(List<Integer> peliculasIds) {
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    Claims claims = (Claims) authentication.getPrincipal();
-
-	    
-	    Integer userId = claims.get("id", Integer.class);
-	    
-	    System.out.println(userId+"WDwdwdww");
-
-	
-	    Usuario usuario = ur.findById(userId)
-	                            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-	
-	    Lista lista = usuario.getLista();
-	    if (lista == null) {
-	        lista = new Lista();
-	        lista.setUsuario(usuario);  
-	        usuario.setLista(lista);
-	    }
-	    
-	    List<Pelicula> peliculas = peliculasIds.stream()
-	            .map(id -> pr.findById(id)
-	                .orElseThrow(() -> new RuntimeException("Película no encontrada: " + id)))
-	            .collect(Collectors.toList());
-	    
-	    lista.setListaPeliculas(peliculas);
-
-
-	     lr.save(lista);
-	     
-	     return convertirADTO(lista);
+	public List<ListaDTO> obtenerLista() {
+		
+		return lr.findAll().stream().map(l->convertirADTO(l)).toList();
 	}
 
+	public ListaDTO addPeliculasToList(List<Integer> peliculasIds) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Claims claims = (Claims) authentication.getPrincipal();
 
+		Integer userId = claims.get("id", Integer.class);
 
-	
+		Usuario usuario = ur.findById(userId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+		Lista lista = usuario.getLista();
+
+		boolean repetidos = lista.getListaPeliculas().stream().map(p -> p.getId())
+				.anyMatch(id -> peliculasIds.contains(id));
+
+		if (repetidos) {
+			
+			new Exception("Ya hay algun elemento en la lista como ese");
+
+		}
+
+		List<Pelicula> peliculasActuales = lista.getListaPeliculas();
+
+		List<Pelicula> nuevasPeliculas = peliculasIds.stream()
+				.filter(id -> peliculasActuales.stream().noneMatch(p -> p.getId() == id))
+				.map(id -> pr.findById(id).orElseThrow(() -> new RuntimeException("Película no encontrada: " + id)))
+				.collect(Collectors.toList());
+
+		peliculasActuales.addAll(nuevasPeliculas);
+
+		lista.setListaPeliculas(peliculasActuales);
+
+		lr.save(lista);
+
+		return convertirADTO(lista);
+	}
+
 	private ListaDTO convertirADTO(Lista lista) {
-		
-		
-		List<String>listaPeliculas = lista.getListaPeliculas().stream().map(Pelicula::getNombre).toList();
 
+		List<String> listaPeliculas = lista.getListaPeliculas().stream().map(Pelicula::getNombre).toList();
 
-	    return new ListaDTO( lista.getId(), lista.getUsuario().getNombre(),listaPeliculas);
-	        
+		return new ListaDTO(lista.getId(), lista.getUsuario().getNombre(), listaPeliculas);
 
 	}
-
-
 
 }

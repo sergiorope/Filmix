@@ -1,0 +1,14 @@
+
+type Query {
+obtenerPeliculasPorRecomendacion(ids: [ID!]!): [PeliculaDTO]    
+
+}
+
+type PeliculaDTO {
+    id: ID!
+    nombre: String
+    sinopsis: String
+    imagen: String
+    listaCategorias: [String]
+    listaValoraciones: [String]
+}
