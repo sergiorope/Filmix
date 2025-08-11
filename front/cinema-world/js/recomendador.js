@@ -214,15 +214,14 @@ async function crearModalPelicula(pelicula) {
 
   const modalContent = document.createElement("div");
   modalContent.className = "modal-content-recommended";
-  
 
   const closeModal = document.createElement("span");
   closeModal.id = "closeModal";
   closeModal.className = "close";
   closeModal.textContent = "×";
 
-    const movies = document.createElement("ul");
-  movies.className = "movies-list"; 
+  const movies = document.createElement("ul");
+  movies.className = "movies-list";
 
   pelicula.forEach((e) => {
     const li = document.createElement("li");
@@ -234,7 +233,6 @@ async function crearModalPelicula(pelicula) {
     const img = document.createElement("img");
     img.src = e.imagen || "images/default.jpg";
     img.style.width = "50%";
-    
 
     const desc = document.createElement("p");
     desc.textContent = e.descripcion || "";
@@ -242,24 +240,17 @@ async function crearModalPelicula(pelicula) {
     const linkWrapper = document.createElement("div");
     linkWrapper.className = "wrapper";
 
-  
-
-
     li.appendChild(title);
     li.appendChild(img);
     li.appendChild(desc);
     li.appendChild(linkWrapper);
 
-  
     movies.appendChild(li);
   });
 
   modalContent.appendChild(movies);
   modal.appendChild(modalContent);
   document.body.appendChild(modal);
-  
-
-
 
   closeModal.addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (e) => {
@@ -271,12 +262,9 @@ const btn = document.querySelector(".link1");
 btn.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  if(sessionStorage == null){
-
-    window.location.href = "http://www.w3schools.com";
-  }else {
-  await crearModal();
-
+  if (sessionStorage.getItem("token") == null) {
+    await crearModal();
+  } else {
+    window.location.href = "../login.html";
   }
-
 });
