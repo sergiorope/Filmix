@@ -1,7 +1,6 @@
-
 type Query {
-obtenerPeliculasPorRecomendacion(ids: [ID!]!): [PeliculaDTO]    
-
+    obtenerPeliculasPorRecomendacion(ids: [ID!]!): [PeliculaDTO]    
+    obtenerUsuario: UsuarioDTO
 }
 
 type PeliculaDTO {
@@ -11,4 +10,13 @@ type PeliculaDTO {
     imagen: String
     listaCategorias: [String]
     listaValoraciones: [String]
+}
+
+type UsuarioDTO {
+    id: ID!
+    nombre: String
+    correo: String
+    password: String
+    lista: Int
+ 
 }

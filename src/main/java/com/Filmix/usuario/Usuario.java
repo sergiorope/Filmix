@@ -25,9 +25,7 @@ public class Usuario {
 	private String correo;
 	private String password;
 	
-	@OneToOne
-	@JoinColumn(name="lista_id")
-
+	@OneToOne(mappedBy = "usuario")
 	private Lista lista;
 
 	

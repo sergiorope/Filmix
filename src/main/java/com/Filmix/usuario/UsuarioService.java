@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -31,14 +32,35 @@ public class UsuarioService {
 		if (!u.getPassword().equals(password)) {
 			throw new RuntimeException("Error la contraseña es incorrecta");
 		}
+		
+		
 
 		return generateToken(convertToDTO(u));
 
 	}
+	
+	public UsuarioDTO obtenerUsuario() {
+		
+			
+		return ur.findById(obtenerClaims().get("id", Integer.class))
+					.map(usuario -> convertToDTO(usuario))
+					.orElseThrow();
+			
+	}
 
-	private UsuarioDTO convertToDTO(Usuario u) {
+	public UsuarioDTO convertToDTO(Usuario u) {
+		
+		
 
 		return new UsuarioDTO(u.getId(), u.getNombre(), u.getCorreo(), u.getPassword());
+
+	}
+	
+	private Claims obtenerClaims() {
+
+		return (Claims) SecurityContextHolder.getContext()
+				.getAuthentication()
+				.getPrincipal();
 
 	}
 
@@ -49,5 +71,7 @@ public class UsuarioService {
 				.claim("id", usuario.getId()).setIssuedAt(new Date()).setExpiration(expirationDate)
 				.signWith(SignatureAlgorithm.HS256, key).compact();
 	}
+	
+	
 
 }

@@ -3,6 +3,7 @@ package com.Filmix.usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,8 +19,8 @@ public class UsuarioController {
 	
 	
 	@PostMapping("/login")
-	public String login(@RequestParam String correo, @RequestParam String password) {
-	    return us.login(correo, password);
+	public String login(@RequestBody UsuarioDTO usuario) {
+	    return us.login(usuario.getCorreo(), usuario.getPassword());
 	}
 	
 	

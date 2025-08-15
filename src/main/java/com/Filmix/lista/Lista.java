@@ -6,6 +6,7 @@ import java.util.List;
 import com.Filmix.pelicula.Pelicula;
 import com.Filmix.usuario.Usuario;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,8 +39,8 @@ public class Lista {
 
 
 
-	@OneToOne(mappedBy = "lista")
-
+	@OneToOne(optional = false, cascade = CascadeType.ALL)
+	@JoinColumn(name = "usuario_id")
 	private Usuario usuario;
 	
 

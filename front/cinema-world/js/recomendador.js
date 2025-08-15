@@ -1,21 +1,28 @@
 const getQuestions = "http://localhost:8080/pregunta/obtenerPreguntas";
+
 const CategoriasIds = [];
 
 const mapaIndice = new Map();
 const mapaRespuestas = new Map();
 
+const tokenSession = sessionStorage.getItem("token");
+
+console.log(tokenSession);
+
 const getPreguntas = async () => {
   try {
-    const res = await fetch(getQuestions, { method: "GET" });
+    if (tokenSession == null) {
+      throw new Error("El token es nulo");
+    }
 
-    if (!res.ok) {
-      const error = document.createElement("p");
-      error.textContent = "No hay ninguna proyección actualmente.";
-      error.style.color = "red";
-      error.style.fontWeight = "bold";
-      error.style.marginTop = "10px";
-      movies.appendChild(error);
-      throw new Error("Network response was not ok");
+    const res = await fetch(getQuestions, {
+      method: "GET",
+      headers: { Authorization: "Bearer " + tokenSession },
+    });
+
+    if(res === null){
+
+      console.log("no hay")
     }
 
     const response = await res.json();
@@ -29,15 +36,35 @@ const getPreguntas = async () => {
     console.log(mapaIndice);
   } catch (error) {
     console.log("Error al obtener películas:", error);
+    throw error;
   }
 };
 
 const getPeliculaRecomendada = async (ids) => {
   try {
-    const url = `http://localhost:8080/pelicula/obtenerPeliculasRecomendada?ids=${ids.join(
-      ","
-    )}`;
-    const res = await fetch(url, { method: "GET" });
+    const urlGraphQL = `http://localhost:8080/graphql`;
+
+    const query = `
+{
+  obtenerPeliculasPorRecomendacion(ids: [${ids
+    .map((id) => `"${id}"`)
+    .join(",")}]) {
+    nombre
+    imagen
+  }
+}
+`;
+
+    const res = await fetch(urlGraphQL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + tokenSession,
+      },
+      body: JSON.stringify({
+        query,
+      }),
+    });
 
     if (!res.ok) {
       throw new Error("Network response was not ok");
@@ -52,7 +79,14 @@ const getPeliculaRecomendada = async (ids) => {
 };
 
 async function crearModal() {
-  await getPreguntas();
+  try {
+    await getPreguntas();
+  } catch (error) {
+    console.log("Error al obtener preguntas desde el click:", error);
+
+    throw error;
+  }
+
   let indiceActual = 1;
 
   const modal = document.createElement("div");
@@ -79,6 +113,8 @@ async function crearModal() {
   divOptions.id = "options";
 
   function renderOptions() {
+    detallesEntrada();
+
     btnFinish.disabled = mapaRespuestas.size < mapaIndice.size;
 
     divOptions.innerHTML = "";
@@ -110,6 +146,12 @@ async function crearModal() {
       input.addEventListener("change", () => {
         mapaRespuestas.set(indiceActual, resp);
         btnFinish.disabled = mapaRespuestas.size < mapaIndice.size;
+
+        if (mapaRespuestas.size != mapaIndice.size) {
+          btnFinish.style.backgroundColor = "grey";
+        } else {
+          btnFinish.style.backgroundColor = "black";
+        }
       });
 
       const span = document.createElement("span");
@@ -172,7 +214,13 @@ async function crearModal() {
       indiceActual++;
       renderOptions();
       btnPrev.disabled = false;
-      if (indiceActual === mapaIndice.size) btnNext.disabled = true;
+      if (indiceActual === mapaIndice.size) {
+        btnNext.disabled = true;
+
+        btnNext.style.backgroundColor = "grey";
+      } else if (indiceActual != 1) {
+        btnPrev.style.backgroundColor = "black";
+      }
     }
   });
 
@@ -181,9 +229,24 @@ async function crearModal() {
       indiceActual--;
       renderOptions();
       btnNext.disabled = false;
-      if (indiceActual === 1) btnPrev.disabled = true;
+      if (indiceActual === 1) {
+        btnPrev.disabled = true;
+
+        btnPrev.style.backgroundColor = "grey";
+      } else if (indiceActual != mapaIndice.size) {
+        btnNext.style.backgroundColor = "black";
+      }
+
+      console.log(mapaIndice.size);
     }
   });
+
+  function detallesEntrada() {
+    if (indiceActual === 1) {
+      btnPrev.style.backgroundColor = "grey";
+      btnFinish.style.backgroundColor = "grey";
+    }
+  }
 
   btnFinish.addEventListener("click", async () => {
     CategoriasIds.length = 0;
@@ -195,10 +258,13 @@ async function crearModal() {
     console.log("IDs categorías:", CategoriasIds);
 
     let pelicula = await getPeliculaRecomendada(CategoriasIds);
+
+    const peliculas = pelicula.data.obtenerPeliculasPorRecomendacion;
+
     console.log("Respuesta de película recomendada:", pelicula);
 
     modal.remove();
-    crearModalPelicula(pelicula);
+    crearModalPelicula(peliculas);
 
     btnPrev.disabled = false;
     btnNext.disabled = false;
@@ -211,6 +277,22 @@ async function crearModalPelicula(pelicula) {
   modal.id = "modal";
   modal.className = "modal";
   modal.style.display = "flex";
+
+  const center = document.createElement("div");
+  center.className = "center";
+
+  const btn1 = document.createElement("div");
+  btn1.className = "btn-1";
+
+  const a = document.createElement("a");
+  a.href = "";
+
+  const span = document.createElement("span");
+  span.textContent = "Añadir a la lista";
+
+  center.appendChild(btn1);
+  btn1.appendChild(a);
+  a.appendChild(span);
 
   const modalContent = document.createElement("div");
   modalContent.className = "modal-content-recommended";
@@ -246,9 +328,11 @@ async function crearModalPelicula(pelicula) {
     li.appendChild(linkWrapper);
 
     movies.appendChild(li);
+    movies.appendChild(center);
   });
 
   modalContent.appendChild(movies);
+
   modal.appendChild(modalContent);
   document.body.appendChild(modal);
 
@@ -262,9 +346,19 @@ const btn = document.querySelector(".link1");
 btn.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  if (sessionStorage.getItem("token") == null) {
+  if(!tokenSession){
+
+        window.location.href = "../login.html";
+
+    }
+
+  try {
     await crearModal();
-  } else {
-    window.location.href = "../login.html";
+
+    
+  } catch (error) {
+    console.log("Error al obtener al crear el modal:", error);
+
+   
   }
 });

@@ -34,32 +34,35 @@ public class FilmixApplication {
 	}
 	
 	@Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")  
-                        .allowedOrigins("http://127.0.0.1:5500") 
-                        .allowedMethods("GET", "POST", "PUT", "DELETE");
-            }
-        };
-    }
-	
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/usuario/login").permitAll()
-                .requestMatchers("/pelicula/obtenerPeliculas").permitAll()
-                .requestMatchers("/graphiql").permitAll()
-                .requestMatchers("/graphql").permitAll()
+	public WebMvcConfigurer corsConfigurer() {
+	    return new WebMvcConfigurer() {
+	        @Override
+	        public void addCorsMappings(CorsRegistry registry) {
+	            registry.addMapping("/**")
+	                    .allowedOrigins("http://127.0.0.1:5500")
+	                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+	                    .allowedHeaders("*") 
+	                    .allowCredentials(true);
+	        }
+	    };
+	}
 
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	    http
+	        .csrf(csrf -> csrf.disable())
+	        .cors(cors -> {}) 
+	        .authorizeHttpRequests(auth -> auth
+	            .requestMatchers("/usuario/login").permitAll()
+	            .requestMatchers("/pelicula/obtenerPeliculas").permitAll()
+	            .requestMatchers("/graphiql").permitAll()
+	            .anyRequest().authenticated() 
+	        )
+	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+	        .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+	    return http.build();
+	}
+
     
     @Bean
     public OncePerRequestFilter jwtFilter() {
@@ -74,13 +77,15 @@ public class FilmixApplication {
                                 .setSigningKey(key)
                                 .parseClaimsJws(token)
                                 .getBody();
-                              
+                        
+                        System.out.println("wdwdw");
+
 
                         if (user != null) {
+                        	
                             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
                             org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(auth);
                             
-                            System.out.println(user+"dwdwwdw");
                         }
                     } catch (Exception e) {
                     }
