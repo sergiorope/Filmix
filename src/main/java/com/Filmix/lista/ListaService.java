@@ -43,15 +43,6 @@ public class ListaService {
 
 		Lista lista = usuario.getLista();
 
-		boolean repetidos = lista.getListaPeliculas().stream().map(p -> p.getId())
-				.anyMatch(id -> peliculasIds.contains(id));
-
-		if (repetidos) {
-			
-			new Exception("Ya hay algun elemento en la lista como ese");
-
-		}
-
 		List<Pelicula> peliculasActuales = lista.getListaPeliculas();
 
 		List<Pelicula> nuevasPeliculas = peliculasIds.stream()

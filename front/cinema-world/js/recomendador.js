@@ -20,9 +20,8 @@ const getPreguntas = async () => {
       headers: { Authorization: "Bearer " + tokenSession },
     });
 
-    if(res === null){
-
-      console.log("no hay")
+    if (res === null) {
+      console.log("no hay");
     }
 
     const response = await res.json();
@@ -49,6 +48,7 @@ const getPeliculaRecomendada = async (ids) => {
   obtenerPeliculasPorRecomendacion(ids: [${ids
     .map((id) => `"${id}"`)
     .join(",")}]) {
+    id
     nombre
     imagen
   }
@@ -284,15 +284,14 @@ async function crearModalPelicula(pelicula) {
   const btn1 = document.createElement("div");
   btn1.className = "btn-1";
 
-  const a = document.createElement("a");
-  a.href = "";
+  const buttonAñadir = document.createElement("button");
 
   const span = document.createElement("span");
   span.textContent = "Añadir a la lista";
 
   center.appendChild(btn1);
-  btn1.appendChild(a);
-  a.appendChild(span);
+  btn1.appendChild(buttonAñadir);
+  buttonAñadir.appendChild(span);
 
   const modalContent = document.createElement("div");
   modalContent.className = "modal-content-recommended";
@@ -305,7 +304,13 @@ async function crearModalPelicula(pelicula) {
   const movies = document.createElement("ul");
   movies.className = "movies-list";
 
+  const idsPeliculas = [];
+
   pelicula.forEach((e) => {
+    idsPeliculas.push(e.id);
+
+    console.log(e.id + "wdwdwdwdw");
+
     const li = document.createElement("li");
     li.className = "recommended-item";
 
@@ -340,25 +345,50 @@ async function crearModalPelicula(pelicula) {
   modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.remove();
   });
+
+  buttonAñadir.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    await añadiraLista(idsPeliculas);
+    idsPeliculas.splice();
+    location.reload();
+  });
 }
 
 const btn = document.querySelector(".link1");
 btn.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  if(!tokenSession){
-
-        window.location.href = "../login.html";
-
-    }
+  if (!tokenSession) {
+    window.location.href = "../login.html";
+  }
 
   try {
     await crearModal();
-
-    
   } catch (error) {
     console.log("Error al obtener al crear el modal:", error);
-
-   
   }
 });
+
+async function añadiraLista(ids) {
+  const postAñadiraLista = `http://localhost:8080/lista/addPeliculasToList?peliculasIds=${ids.join(
+    ","
+  )}`;
+
+  try {
+    const res = await fetch(postAñadiraLista, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + tokenSession,
+      },
+    });
+
+    const response = await res.json();
+
+    console.log(response);
+  } catch (error) {
+    console.log("Error al añadir peliculas a la lista:", error);
+    throw error;
+  }
+}

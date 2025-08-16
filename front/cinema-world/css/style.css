@@ -695,8 +695,8 @@ body{
 }
 /* Created by http://grohit.com/  */
 footer a,
-.btn-1 a,
-.btn-2 a {
+.btn-1 button,
+.btn-2 button {
   text-decoration: none;
   border: 2px solid #ffffff;
   padding: 15px;
@@ -715,7 +715,7 @@ span {
 
 /* Button 1 styles */
 
-.btn-1 a::before {
+.btn-1 button::before {
   content: "";
   position: absolute;
   top: 5px;
@@ -728,12 +728,12 @@ span {
   transform: scaleY(1);
 }
 
-.btn-1 a:hover::before,
-.btn-2 a:hover::before {
+.btn-1 button:hover::before,
+.btn-2 button:hover::before {
   transform: scaleY(0);
 }
 
-.btn-1 a::after {
+.btn-1 button::after {
   content: "";
   position: absolute;
   left: 5px;
@@ -747,24 +747,24 @@ span {
 }
 
 
-.btn-1 a:hover::after,
-.btn-2 a:hover::after {
+.btn-1 button:hover::after,
+.btn-2 button:hover::after {
   transform: scaleX(0);
 }
 
 
 
-.btn-2 a {
+.btn-2 button {
   color: #ffffff;
   transition: all 0.5s ease-in-out;
 }
 
-.btn-2 a:hover {
+.btn-2 button:hover {
   color: #ffffff;
   transition: all 0.5s ease-in-out;
 }
 
-.btn-2 a::before {
+.btn-2 button::before {
   content: "";
   position: absolute;
   top: 0;
@@ -776,7 +776,7 @@ span {
   transform: scaleY(1);
 }
 
-.btn-2 a::after {
+.btn-2 button::after {
   content: "";
   position: absolute;
   left: 0;
