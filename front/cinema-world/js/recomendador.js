@@ -285,6 +285,7 @@ async function crearModalPelicula(pelicula) {
   btn1.className = "btn-1";
 
   const buttonAñadir = document.createElement("button");
+  buttonAñadir.style.cursor = "pointer";
 
   const span = document.createElement("span");
   span.textContent = "Añadir a la lista";
