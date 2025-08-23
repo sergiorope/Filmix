@@ -14,6 +14,7 @@ import com.Filmix.usuario.Usuario;
 import com.Filmix.usuario.UsuarioRepository;
 
 import io.jsonwebtoken.Claims;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ListaService {
@@ -58,6 +59,19 @@ public class ListaService {
 
 		return convertirADTO(lista);
 	}
+	
+
+	public void borrarPeliculaLista(int peliculaId) {
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Claims claims = (Claims) authentication.getPrincipal();
+
+		Integer userId = claims.get("id", Integer.class);
+		
+		 lr.eliminarPeliculaDeLista(peliculaId, lr.findByUsuarioId(userId).getId()); 
+		
+	}
+
 
 	private ListaDTO convertirADTO(Lista lista) {
 
