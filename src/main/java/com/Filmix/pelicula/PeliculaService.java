@@ -21,87 +21,47 @@ import com.Filmix.categoria.CategoriaRespository;
 public class PeliculaService {
 
 	@Autowired
-	PeliculaRepository pr;
+	PeliculaRepository peliculaRepository;
 
-	public List<PeliculaDTO> obtenerPeliculas() {
+	public List<PeliculaDTO> findAll() {
 
-		List<Pelicula> listaPeliculas = pr.findAll();
-		
-		return listaPeliculas.stream()
-                .map(this::convertirADTO)
-                .collect(Collectors.toList());
+		return peliculaRepository.findAll().stream().map(this::converToDTO).collect(Collectors.toList());
 
 	}
 
-	public List<PeliculaDTO> obtenerPeliculasPorCategoria(int id) {
+	public List<PeliculaDTO> findByCategory(int id) {
 
-		
-				
-				return pr.peliculaPorCategoria(id)
-						.stream()
-						.map(this::convertirADTO)
-						.collect(Collectors.toList());
-				
-				
+		return peliculaRepository.findByCategory(id).stream().map(this::converToDTO).collect(Collectors.toList());
 
 	}
 
-	public List<PeliculaDTO> obtenerPeliculasRecomendadas(List<Integer> ids) {
+	public List<PeliculaDTO> findRecommended(List<Integer> ids) {
 
-		HashMap<Integer, Integer> mapaPeliculasMasRepetidas = new HashMap<>();
+		HashMap<Integer, Integer> mostRepeatedFilmsMap = new HashMap<>();
 
-		ids.stream()
-		.forEach(i -> mapaPeliculasMasRepetidas.put(i, mapaPeliculasMasRepetidas.getOrDefault(i, 0) + 1));
+		ids.stream().forEach(i -> mostRepeatedFilmsMap.put(i, mostRepeatedFilmsMap.getOrDefault(i, 0) + 1));
 
-		int valorPeliculaMasRepetida = mapaPeliculasMasRepetidas
-				.entrySet()
-				.stream()
-				.max(Map.Entry.comparingByValue())
+		int mostRepeatedFilmValue = mostRepeatedFilmsMap.entrySet().stream().max(Map.Entry.comparingByValue())
 				.map(Map.Entry::getValue).orElseThrow();
-		
 
-		
+		List<Integer> mostRepeatedFilmKey = mostRepeatedFilmsMap.entrySet().stream()
+				.filter(e -> e.getValue().equals(mostRepeatedFilmValue)).map(Map.Entry::getKey)
+				.collect(Collectors.toList());
 
-		List<Integer> clavePeliculaMasRepetida= mapaPeliculasMasRepetidas.entrySet()
-		.stream()
-		.filter(e -> e.getValue().equals(valorPeliculaMasRepetida))
-		.map(Map.Entry::getKey)
-		.collect(Collectors.toList());
-		
-
-
-	    
-	    
-
-
-		return pr.peliculasPorCategoriaRecomendada(clavePeliculaMasRepetida , PageRequest.of(0, 2))
-				.stream()
-                .map(this::convertirADTO)
-                .collect(Collectors.toList());
+		return peliculaRepository.peliculasPorCategoriaRecomendada(mostRepeatedFilmKey, PageRequest.of(0, 2)).stream()
+				.map(this::converToDTO).collect(Collectors.toList());
 
 	}
-	
-	private PeliculaDTO convertirADTO(Pelicula pelicula) {
-	    List<String> nombresCategorias = pelicula.getListaCategorias()
-	                                            .stream()
-	                                            .map(Categoria::getNombre)
-	                                            .collect(Collectors.toList());
 
-	    List<String> resumenValoraciones = pelicula.getListaValoraciones()
-	                                              .stream()
-	                                              .map(v -> "Puntaje: " + v.getNota()) 
-	                                              .collect(Collectors.toList());
+	private PeliculaDTO converToDTO(Pelicula pelicula) {
+		List<String> categoryNames = pelicula.getListaCategorias().stream().map(Categoria::getNombre)
+				.collect(Collectors.toList());
 
-	    return new PeliculaDTO(
-	        pelicula.getId(),
-	        pelicula.getNombre(),
-	        pelicula.getSinopsis(),
-	        pelicula.getImagen(),
-	        nombresCategorias,
-	        resumenValoraciones
-	    );
+		List<String> RaitingResume = pelicula.getListaValoraciones().stream().map(v -> "Puntaje: " + v.getNota())
+				.collect(Collectors.toList());
+
+		return new PeliculaDTO(pelicula.getId(), pelicula.getNombre(), pelicula.getSinopsis(), pelicula.getImagen(),
+				categoryNames, RaitingResume);
 	}
-
-
 
 }

@@ -35,9 +35,9 @@ public class ListaController {
 	}
 	
 	@DeleteMapping("/deletePeliculaFromList")
-	public void deleFromLista(@RequestParam int peliculaId) {
+	public void deleFromLista(@RequestParam String pelicula) {
 
-		 ls.borrarPeliculaLista(peliculaId);
+		 ls.borrarPeliculaLista(pelicula);
 	}
 	
 	

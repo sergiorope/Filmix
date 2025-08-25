@@ -1,5 +1,5 @@
 type Query {
-    obtenerPeliculasPorRecomendacion(ids: [ID!]!): [PeliculaDTO]    
+    getRecommended(ids: [ID!]!): [PeliculaDTO]    
     obtenerUsuario: UsuarioDTO
 }
 

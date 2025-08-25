@@ -19,7 +19,7 @@ public interface PeliculaRepository extends JpaRepository<Pelicula, Integer> {
 	public List<Pelicula> peliculasPorCategoriaRecomendada(List<Integer> idsMax, PageRequest pageRequest);
 	
 	@Query("SELECT p FROM Pelicula p JOIN p.listaCategorias c WHERE c.id = ?1")
-	public List<Pelicula> peliculaPorCategoria(int id);
+	public List<Pelicula> findByCategory(int id);
 	
 	@Modifying
 	@Query("DELETE FROM Pelicula p WHERE p.nombre = ?1")

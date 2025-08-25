@@ -61,14 +61,17 @@ public class ListaService {
 	}
 	
 
-	public void borrarPeliculaLista(int peliculaId) {
+	public void borrarPeliculaLista(String pelicula) {
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Claims claims = (Claims) authentication.getPrincipal();
 
 		Integer userId = claims.get("id", Integer.class);
 		
-		 lr.eliminarPeliculaDeLista(peliculaId, lr.findByUsuarioId(userId).getId()); 
+		
+		
+		
+		 lr.eliminarPeliculaDeLista(pr.nombrePelicula(pelicula).getId(), lr.findByUsuarioId(userId).getId()); 
 		
 	}
 

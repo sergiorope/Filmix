@@ -788,6 +788,21 @@ span {
   transform: scaleX(1);
 }
 
+.btn-borrar {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 16px;
+  cursor: pointer; /* Hace que el mouse cambie a mano */
+  transition: transform 0.2s, color 0.2s;
+}
+
+.btn-borrar:hover {
+  color: darkred;
+  transform: scale(1.2); /* Se hace un poco más grande al pasar el mouse */
+}
+
+
 @media(max-width:576px){
     .question{
         width: 100%;

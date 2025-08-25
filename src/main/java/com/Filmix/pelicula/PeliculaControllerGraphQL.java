@@ -5,18 +5,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class PeliculaControllerGraphQL {
 
 	@Autowired
-	PeliculaService ps;
+	PeliculaService peliculaService;
 
 	@QueryMapping
-	public List<PeliculaDTO> obtenerPeliculasPorRecomendacion(@Argument List<Integer> ids) {
+	public ResponseEntity<List<PeliculaDTO>> getRecommended(@Argument List<Integer> ids) {
 
-		return ps.obtenerPeliculasRecomendadas(ids);
+		return ResponseEntity.ok(peliculaService.findRecommended(ids));
 
 	}
 

@@ -17,34 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class PeliculaController {
 
 	@Autowired
-	PeliculaService ps;
+	PeliculaService peliculaService;
 
 	@GetMapping("/obtenerPeliculas")
-	public ResponseEntity<List<PeliculaDTO>> obtenerPeliculas() {
+	public ResponseEntity<List<PeliculaDTO>> getFilms() {
 
-		List<PeliculaDTO> listaPeliculas = ps.obtenerPeliculas();
-
-		if (listaPeliculas.isEmpty()) {
-
-			return ResponseEntity.notFound().build();
-		} else {
-
-			return ResponseEntity.ok(listaPeliculas);
-		}
+		return ResponseEntity.ok(peliculaService.findAll());
 
 	}
-
-	@GetMapping("/obtenerPeliculasRecomendada")
-	public ResponseEntity<List<PeliculaDTO>> obtenerPeliculasRecomendada(@RequestParam List<Integer> ids) {
-	    System.out.println("IDs recibidos: " + ids);
-	    List<PeliculaDTO> listaPeliculas = ps.obtenerPeliculasRecomendadas(ids);
-
-	    if (listaPeliculas.isEmpty()) {
-	        return ResponseEntity.notFound().build();
-	    } else {
-	        return ResponseEntity.ok(listaPeliculas);
-	    }
-	}
-
 
 }

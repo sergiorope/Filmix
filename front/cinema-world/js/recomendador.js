@@ -213,13 +213,16 @@ async function crearModal() {
     if (indiceActual < mapaIndice.size) {
       indiceActual++;
       renderOptions();
+              btnPrev.style.backgroundColor = "black";
+
       btnPrev.disabled = false;
       if (indiceActual === mapaIndice.size) {
         btnNext.disabled = true;
 
         btnNext.style.backgroundColor = "grey";
       } else if (indiceActual != 1) {
-        btnPrev.style.backgroundColor = "black";
+      
+       
       }
     }
   });
@@ -228,10 +231,13 @@ async function crearModal() {
     if (indiceActual > 1) {
       indiceActual--;
       renderOptions();
+                    btnNext.style.backgroundColor = "black";
+
       btnNext.disabled = false;
       if (indiceActual === 1) {
         btnPrev.disabled = true;
 
+        
         btnPrev.style.backgroundColor = "grey";
       } else if (indiceActual != mapaIndice.size) {
         btnNext.style.backgroundColor = "black";
