@@ -11,29 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Filmix.pelicula.PeliculaDTO;
 
-@RequestMapping("/pregunta")
+@RequestMapping("/preguntas")
 @RestController
 public class PreguntaController {
-	
+
 	@Autowired
 	PreguntaService ps;
-	
-	@GetMapping("/obtenerPreguntas")
-	public ResponseEntity<List<PreguntaDTO>> obtenerPeliculas() {
 
-		List<PreguntaDTO> listaPreguntas = ps.obtenerPreguntas();
+	@GetMapping
+	public ResponseEntity<List<PreguntaDTO>> getQuestions() {
 
-		if (listaPreguntas.isEmpty()) {
-
-			return ResponseEntity.notFound().build();
-		} else {
-
-			return ResponseEntity.ok(listaPreguntas);
-		}
+		return ResponseEntity.ok(ps.findAll());
 
 	}
-
-
-
 
 }

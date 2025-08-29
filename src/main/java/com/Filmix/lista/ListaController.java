@@ -13,31 +13,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Filmix.pelicula.Pelicula;
 
-@RequestMapping("/lista")
+@RequestMapping("/listas")
 @RestController
 public class ListaController {
 
 	@Autowired
-	ListaService ls;
+	ListaService listaService;
 	
-	@GetMapping("/obtenerLista")
-	public List<ListaDTO> obtenerLista() {
+	@GetMapping
+	public List<ListaDTO> getList() {
 
-		return ls.obtenerLista();
+		return listaService.findAll();
 
 	}
 
-	@PostMapping("/addPeliculasToList")
-	public ListaDTO addPeliculas(@RequestParam List<Integer> peliculasIds) {
+	@PostMapping
+	public ListaDTO addFilms(@RequestParam List<Integer> peliculasIds) {
 
-		return ls.addPeliculasToList(peliculasIds);
+		return listaService.addFilms(peliculasIds);
 
 	}
 	
-	@DeleteMapping("/deletePeliculaFromList")
-	public void deleFromLista(@RequestParam String pelicula) {
+	@DeleteMapping
+	public void deleteFilm(@RequestParam String pelicula) {
 
-		 ls.borrarPeliculaLista(pelicula);
+		listaService.deleteFilm(pelicula);
 	}
 	
 	

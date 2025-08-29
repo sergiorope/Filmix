@@ -1,6 +1,7 @@
 package com.Filmix.usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,12 +16,12 @@ import io.jsonwebtoken.Claims;
 public class UsuarioController {
 	
 	@Autowired
-	UsuarioService us;
+	UsuarioService usuarioService;
 	
 	
 	@PostMapping("/login")
-	public String login(@RequestBody UsuarioDTO usuario) {
-	    return us.login(usuario.getCorreo(), usuario.getPassword());
+	public ResponseEntity<String> login(@RequestBody UsuarioDTO usuario) throws Exception {
+	    return ResponseEntity.ok(usuarioService.login(usuario.getCorreo(), usuario.getPassword()));
 	}
 	
 	

@@ -1,4 +1,4 @@
-const getFilms = "http://localhost:8080/pelicula/obtenerPeliculas";
+const getFilms = "http://localhost:8080/peliculas";
 
 const obtenerUsuario = "http://localhost:8080/graphql";
 

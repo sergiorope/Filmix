@@ -20,63 +20,60 @@ import jakarta.transaction.Transactional;
 public class ListaService {
 
 	@Autowired
-	ListaRepository lr;
+	ListaRepository listaRepository;
 
 	@Autowired
-	UsuarioRepository ur;
+	UsuarioRepository usuarioRepository;
 
 	@Autowired
-	PeliculaRepository pr;
-	
-	
-	public List<ListaDTO> obtenerLista() {
-		
-		return lr.findAll().stream().map(l->convertirADTO(l)).toList();
+	PeliculaRepository peliculaRepository;
+
+	public List<ListaDTO> findAll() {
+
+		return listaRepository.findAll().stream().map(l -> converToDTO(l)).toList();
 	}
 
-	public ListaDTO addPeliculasToList(List<Integer> peliculasIds) {
+	public ListaDTO addFilms(List<Integer> peliculasIds) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Claims claims = (Claims) authentication.getPrincipal();
 
 		Integer userId = claims.get("id", Integer.class);
 
-		Usuario usuario = ur.findById(userId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+		Usuario user = usuarioRepository.findById(userId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-		Lista lista = usuario.getLista();
+		Lista list = user.getLista();
 
-		List<Pelicula> peliculasActuales = lista.getListaPeliculas();
+		List<Pelicula> actualFilms = list.getListaPeliculas();
 
-		List<Pelicula> nuevasPeliculas = peliculasIds.stream()
-				.filter(id -> peliculasActuales.stream().noneMatch(p -> p.getId() == id))
-				.map(id -> pr.findById(id).orElseThrow(() -> new RuntimeException("Película no encontrada: " + id)))
+		List<Pelicula> newFilms = peliculasIds.stream()
+				.filter(id -> actualFilms.stream().noneMatch(p -> p.getId() == id))
+				.map(id -> peliculaRepository.findById(id).orElseThrow(() -> new RuntimeException("Película no encontrada: " + id)))
 				.collect(Collectors.toList());
 
-		peliculasActuales.addAll(nuevasPeliculas);
+		actualFilms.addAll(newFilms);
 
-		lista.setListaPeliculas(peliculasActuales);
+		list.setListaPeliculas(actualFilms);
 
-		lr.save(lista);
+		listaRepository.save(list);
 
-		return convertirADTO(lista);
+		return converToDTO(list);
 	}
-	
 
-	public void borrarPeliculaLista(String pelicula) {
-		
+	public void deleteFilm(String pelicula) {
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Claims claims = (Claims) authentication.getPrincipal();
 
 		Integer userId = claims.get("id", Integer.class);
+
 		
+		System.out.println(peliculaRepository.findByName(pelicula).getId() + "despues: "+listaRepository.findByUsuarioId(userId).getId() );
 		
-		
-		
-		 lr.eliminarPeliculaDeLista(pr.nombrePelicula(pelicula).getId(), lr.findByUsuarioId(userId).getId()); 
-		
+		listaRepository.deleteFilm(peliculaRepository.findByName(pelicula).getId(), listaRepository.findByUsuarioId(userId).getId());
+
 	}
 
-
-	private ListaDTO convertirADTO(Lista lista) {
+	private ListaDTO converToDTO(Lista lista) {
 
 		List<String> listaPeliculas = lista.getListaPeliculas().stream().map(Pelicula::getNombre).toList();
 

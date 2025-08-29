@@ -1,5 +1,4 @@
-const getLista = "http://localhost:8080/lista/obtenerLista";
-const deletePeliculaUrl = "http://localhost:8080/lista/eliminarPelicula";
+const getLista = "http://localhost:8080/listas";
 const token = sessionStorage.getItem("token");
 
 async function obtenerLista() {
@@ -48,7 +47,7 @@ function renderPeliculas(listaUsuarios) {
 }
 
 async function borrarPelicula(pelicula) {
-  const deletePeliculaUrl = `http://localhost:8080/lista/deletePeliculaFromList?pelicula=${pelicula}`;
+  const deletePeliculaUrl = `http://localhost:8080/listas?pelicula=${pelicula}`;
 
   try {
     const res = await fetch(deletePeliculaUrl, {

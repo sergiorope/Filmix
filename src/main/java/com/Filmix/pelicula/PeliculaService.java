@@ -31,7 +31,7 @@ public class PeliculaService {
 
 	public List<PeliculaDTO> findByCategory(int id) {
 
-		return peliculaRepository.findByCategory(id).stream().map(this::converToDTO).collect(Collectors.toList());
+		return peliculaRepository.findByCategory(id).orElseThrow(()->new NoSuchElementException("Película por categoría no encontrada")).stream().map(this::converToDTO).collect(Collectors.toList());
 
 	}
 

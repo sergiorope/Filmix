@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 public class CategoriaService {
 
 	@Autowired
-	CategoriaRespository cr;
+	CategoriaRespository categoriaRepository;
 
-	public List<Categoria> obtenerCategorias() {
+	public List<Categoria> findAll() {
 
-		return cr.findAll();
+		return categoriaRepository.findAll();
 
 	}
 

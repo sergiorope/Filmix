@@ -15,22 +15,22 @@ import com.Filmix.respuesta.RespuestaDTO;
 public class PreguntaService {
 
 	@Autowired
-	PreguntaRepository pr;
+	PreguntaRepository preguntaRepository;
 
-	public List<PreguntaDTO> obtenerPreguntas() {
+	public List<PreguntaDTO> findAll() {
 
-		List<Pregunta> listaPreguntas= pr.obtenerPreguntasModal(PageRequest.of(0, 5));
+		List<Pregunta> QuestionList= preguntaRepository.findAllPage(PageRequest.of(0, 5));
 		
-		 return listaPreguntas.stream()
-				 .map(p -> conversorPreguntaDTO(p))
+		 return QuestionList.stream()
+				 .map(p -> converToDTO(p))
 				 .toList();
 		
 		
 
 	}
 	
-	public PreguntaDTO conversorPreguntaDTO(Pregunta pregunta) {
-	    List<RespuestaDTO> listaRespuestas = pregunta.getListaRespuestas()
+	public PreguntaDTO converToDTO(Pregunta pregunta) {
+	    List<RespuestaDTO> QuestionList = pregunta.getListaRespuestas()
 	            .stream()
 	            .map(r -> new RespuestaDTO(
 	                    r.getId(),
@@ -43,7 +43,7 @@ public class PreguntaService {
 	            ))
 	            .collect(Collectors.toList());
 
-	    return new PreguntaDTO(pregunta.getId(), pregunta.getFrase(), listaRespuestas);
+	    return new PreguntaDTO(pregunta.getId(), pregunta.getFrase(), QuestionList);
 	}
 
 

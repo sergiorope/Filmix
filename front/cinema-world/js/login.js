@@ -1,5 +1,6 @@
 const inputEmail = document.getElementById("email");
 const inputPassword = document.getElementById("password");
+const div = document.querySelector(".inset");
 
 const loginToken = async (email, password) => {
   try {
@@ -14,6 +15,12 @@ const loginToken = async (email, password) => {
     });
 
     if (!res.ok) {
+      const error = document.createElement("p");
+      error.textContent = "Error en las credenciales";
+      error.style.color = "red";
+      error.style.fontWeight = "bold";
+      error.style.marginTop = "10px";
+      div.appendChild(error);
       throw new Error("Network response was not ok");
     }
 

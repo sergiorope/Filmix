@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface PreguntaRepository extends JpaRepository<Pregunta, Integer> {
 	
 	@Query("SELECT p FROM Pregunta p")
-	public List<Pregunta> obtenerPreguntasModal(Pageable pageable);
+	public List<Pregunta> findAllPage(Pageable pageable);
 
 
 }

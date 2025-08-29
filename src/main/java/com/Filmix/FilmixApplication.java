@@ -54,7 +54,7 @@ public class FilmixApplication {
 	        .cors(cors -> {}) 
 	        .authorizeHttpRequests(auth -> auth
 	            .requestMatchers("/usuario/login").permitAll()
-	            .requestMatchers("/pelicula/obtenerPeliculas").permitAll()
+	            .requestMatchers("/peliculas").permitAll()
 	            .requestMatchers("/graphiql").permitAll()
 	            .anyRequest().authenticated() 
 	        )

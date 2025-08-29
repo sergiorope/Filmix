@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/pelicula")
+@RequestMapping("/peliculas")
 @RestController
 public class PeliculaController {
 
 	@Autowired
 	PeliculaService peliculaService;
 
-	@GetMapping("/obtenerPeliculas")
+	@GetMapping
 	public ResponseEntity<List<PeliculaDTO>> getFilms() {
 
 		return ResponseEntity.ok(peliculaService.findAll());

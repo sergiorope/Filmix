@@ -15,6 +15,8 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface ListaRepository extends JpaRepository<Lista, Integer> {
+	
+	
 
 	@Query("SELECT l FROM Lista l WHERE l.usuario.id = :usuarioId")
 	Lista findByUsuarioId(@Param("usuarioId") int usuarioId);
@@ -23,6 +25,6 @@ public interface ListaRepository extends JpaRepository<Lista, Integer> {
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM pelicula_lista WHERE pelicula_id = :peliculaId AND lista_id = :listaId", nativeQuery = true)
-	void eliminarPeliculaDeLista(@Param("peliculaId") int peliculaId, @Param("listaId") int listaId);
+	void deleteFilm(@Param("peliculaId") int peliculaId, @Param("listaId") int listaId);
 
 }

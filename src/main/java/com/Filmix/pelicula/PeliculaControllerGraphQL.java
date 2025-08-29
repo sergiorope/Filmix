@@ -15,9 +15,9 @@ public class PeliculaControllerGraphQL {
 	PeliculaService peliculaService;
 
 	@QueryMapping
-	public ResponseEntity<List<PeliculaDTO>> getRecommended(@Argument List<Integer> ids) {
+	public List<PeliculaDTO> getRecommended(@Argument List<Integer> ids) {
 
-		return ResponseEntity.ok(peliculaService.findRecommended(ids));
+		return peliculaService.findRecommended(ids);
 
 	}
 

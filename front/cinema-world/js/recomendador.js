@@ -1,4 +1,4 @@
-const getQuestions = "http://localhost:8080/pregunta/obtenerPreguntas";
+const getQuestions = "http://localhost:8080/preguntas";
 
 const CategoriasIds = [];
 
@@ -45,7 +45,7 @@ const getPeliculaRecomendada = async (ids) => {
 
     const query = `
 {
-  obtenerPeliculasPorRecomendacion(ids: [${ids
+  getRecommended(ids: [${ids
     .map((id) => `"${id}"`)
     .join(",")}]) {
     id
@@ -265,7 +265,7 @@ async function crearModal() {
 
     let pelicula = await getPeliculaRecomendada(CategoriasIds);
 
-    const peliculas = pelicula.data.obtenerPeliculasPorRecomendacion;
+    const peliculas = pelicula.data.getRecommended;
 
     console.log("Respuesta de película recomendada:", pelicula);
 
@@ -378,10 +378,8 @@ btn.addEventListener("click", async (e) => {
 });
 
 async function añadiraLista(ids) {
-  const postAñadiraLista = `http://localhost:8080/lista/addPeliculasToList?peliculasIds=${ids.join(
-    ","
-  )}`;
-
+const queryParams = ids.map(id => `peliculasIds=${id}`).join("&");
+const postAñadiraLista = `http://localhost:8080/listas?${queryParams}`;
   try {
     const res = await fetch(postAñadiraLista, {
       method: "POST",
