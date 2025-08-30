@@ -14,10 +14,10 @@ import org.springframework.stereotype.Repository;
 public interface PeliculaRepository extends JpaRepository<Pelicula, Integer> {
 
 	@Query("SELECT p FROM Pelicula p WHERE p.nombre = ?1")
-	public Pelicula findByName(String nombre);
+	public Optional<Pelicula> findByName(String nombre);
 
 	@Query("SELECT p FROM Pelicula p JOIN p.listaCategorias c WHERE c.id IN :idsMax")
-	public List<Pelicula> peliculasPorCategoriaRecomendada(List<Integer> idsMax, PageRequest pageRequest);
+	public Optional<List<Pelicula>> findRecommended(List<Integer> idsMax, PageRequest pageRequest);
 	
 	@Query("SELECT p FROM Pelicula p JOIN p.listaCategorias c WHERE c.id = ?1")
 	Optional<List<Pelicula>> findByCategory(int id);

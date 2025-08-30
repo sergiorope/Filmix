@@ -1,24 +1,14 @@
-const getFilms = "http://localhost:8080/peliculas";
-
-const obtenerUsuario = "http://localhost:8080/graphql";
-
-const token = sessionStorage.getItem("token");
-
-
+const GET_FILMS_URL = "http://localhost:8080/peliculas";
+const GET_USER_URL = "http://localhost:8080/graphql";
+const TOKEN = sessionStorage.getItem("token");
 
 const getPeliculas = async () => {
   try {
-    const res = await fetch(getFilms, { method: "GET" });
+    const res = await fetch(GET_FILMS_URL, { method: "GET" });
     const movies = document.querySelector(".movies");
 
     if (!res.ok) {
-      const error = document.createElement("p");
-      error.textContent = "No hay ninguna ninguna pelicula actualmente.";
-      error.style.color = "red";
-      error.style.fontWeight = "bold";
-      error.style.marginTop = "10px";
-      movies.appendChild(error);
-      throw new Error("Network response was not ok");
+      mostrarError(movies);
     }
 
     const response = await res.json();
@@ -80,40 +70,67 @@ const getPeliculas = async () => {
   }
 };
 
-async function obtenerNombre() {
-  const query = `query {
-                          obtenerUsuario {
-                              nombre
-                          }
-                        } `;
+function opcionesCategorias(){
 
-  const resNombre = await fetch(obtenerUsuario, {
+  const span = document.querySelector(".list")
+
+  const div = document.createElement("div");
+div.className = "box";
+
+const select = document.createElement("select");
+
+for (let i = 1; i <= 5; i++) {
+    const option = document.createElement("option");
+    option.textContent = `Option ${i}`;
+    select.appendChild(option);
+}
+
+div.appendChild(select);
+
+span.appendChild(div);
+}
+
+async function getUsuarioNombre() {
+  const query = `query {
+                    getUser {
+                        nombre
+                    }
+                  }`;
+
+  const resNombre = await fetch(GET_USER_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
+      Authorization: "Bearer " + TOKEN,
     },
-
-    body: JSON.stringify({
-      query,
-    }),
+    body: JSON.stringify({ query }),
   });
 
   const nombre = await resNombre.json();
-  return nombre.data.obtenerUsuario.nombre;
+  return nombre.data.getUser.nombre;
 }
 
 function mostrarBienvenida() {
   const icons = document.getElementById("icons");
 
   const msgBienvenida = document.createElement("p");
-
   icons.appendChild(msgBienvenida);
 
-  obtenerNombre().then((value) => {
+  getUsuarioNombre().then((value) => {
     msgBienvenida.textContent = "¡Bienvenido " + value + "!";
   });
 }
 
+function mostrarError(movies) {
+  const error = document.createElement("p");
+  error.textContent = "No hay ninguna pelicula actualmente.";
+  error.style.color = "red";
+  error.style.fontWeight = "bold";
+  error.style.marginTop = "10px";
+  movies.appendChild(error);
+  throw new Error("Network response was not ok");
+}
+
 getPeliculas();
+opcionesCategorias();
 mostrarBienvenida();

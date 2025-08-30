@@ -16,12 +16,12 @@ import com.Filmix.pelicula.PeliculaDTO;
 public class PreguntaController {
 
 	@Autowired
-	PreguntaService ps;
+	PreguntaService preguntaService;
 
 	@GetMapping
 	public ResponseEntity<List<PreguntaDTO>> getQuestions() {
 
-		return ResponseEntity.ok(ps.findAll());
+		return ResponseEntity.ok(preguntaService.findAll());
 
 	}
 

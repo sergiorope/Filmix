@@ -31,7 +31,9 @@ public class PeliculaService {
 
 	public List<PeliculaDTO> findByCategory(int id) {
 
-		return peliculaRepository.findByCategory(id).orElseThrow(()->new NoSuchElementException("Película por categoría no encontrada")).stream().map(this::converToDTO).collect(Collectors.toList());
+		return peliculaRepository.findByCategory(id)
+				.orElseThrow(() -> new NoSuchElementException("Película por categoría no encontrada")).stream()
+				.map(this::converToDTO).collect(Collectors.toList());
 
 	}
 
@@ -48,7 +50,8 @@ public class PeliculaService {
 				.filter(e -> e.getValue().equals(mostRepeatedFilmValue)).map(Map.Entry::getKey)
 				.collect(Collectors.toList());
 
-		return peliculaRepository.peliculasPorCategoriaRecomendada(mostRepeatedFilmKey, PageRequest.of(0, 2)).stream()
+		return peliculaRepository.findRecommended(mostRepeatedFilmKey, PageRequest.of(0, 2))
+				.orElseThrow(() -> new NoSuchElementException("Películas recomendadas no encontradas")).stream()
 				.map(this::converToDTO).collect(Collectors.toList());
 
 	}

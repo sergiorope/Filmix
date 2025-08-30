@@ -1,6 +1,6 @@
 type Query {
     getRecommended(ids: [ID!]!): [PeliculaDTO]    
-    obtenerUsuario: UsuarioDTO
+    getUser: UsuarioDTO
 }
 
 type PeliculaDTO {

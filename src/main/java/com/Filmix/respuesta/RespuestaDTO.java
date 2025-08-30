@@ -13,13 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RespuestaDTO {
-	
-	
-
 
 	private int id;
 	private String nombre;
 	private int pregunta;
-	private List<Integer>listaCategorias;
+	private List<Integer> listaCategorias;
 
 }

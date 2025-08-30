@@ -1,6 +1,7 @@
 package com.Filmix.lista;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +20,7 @@ public interface ListaRepository extends JpaRepository<Lista, Integer> {
 	
 
 	@Query("SELECT l FROM Lista l WHERE l.usuario.id = :usuarioId")
-	Lista findByUsuarioId(@Param("usuarioId") int usuarioId);
+	public Optional<Lista> findByUsuarioId(@Param("usuarioId") int usuarioId);
 
 
 	@Modifying

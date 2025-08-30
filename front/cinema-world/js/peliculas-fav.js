@@ -1,11 +1,11 @@
-const getLista = "http://localhost:8080/listas";
-const token = sessionStorage.getItem("token");
+const GET_LISTA_URL = "http://localhost:8080/listas";
+const TOKEN = sessionStorage.getItem("token");
 
 async function obtenerLista() {
-  const resLista = await fetch(getLista, {
+  const resLista = await fetch(GET_LISTA_URL, {
     method: "GET",
     headers: {
-      Authorization: "Bearer " + token,
+      Authorization: "Bearer " + TOKEN,
     },
   });
 
@@ -14,17 +14,16 @@ async function obtenerLista() {
 }
 
 function renderPeliculas(listaUsuarios) {
-  const contenedor = document.getElementById("peliculas-list");
-  contenedor.innerHTML = "";
+  const contenedorPeliculas = document.getElementById("peliculas-list");
+  contenedorPeliculas.innerHTML = "";
 
   listaUsuarios.forEach((usuarioObj) => {
     const liUsuario = document.createElement("li");
 
     const ulPeliculas = document.createElement("ul");
     usuarioObj.listaPeliculas.forEach((pelicula) => {
-      const liPeli = document.createElement("li");
-
-      liPeli.textContent = "- " + pelicula + " ";
+      const liPelicula = document.createElement("li");
+      liPelicula.textContent = "- " + pelicula + " ";
 
       const btnBorrar = document.createElement("button");
       btnBorrar.textContent = "❌";
@@ -33,33 +32,32 @@ function renderPeliculas(listaUsuarios) {
       btnBorrar.addEventListener("click", () => {
         console.log(pelicula);
 
-        borrarPelicula(pelicula);
-        location.reload();
+        borrarPelicula(pelicula, liPelicula);
       });
 
-      liPeli.appendChild(btnBorrar);
-      ulPeliculas.appendChild(liPeli);
+      liPelicula.appendChild(btnBorrar);
+      ulPeliculas.appendChild(liPelicula);
     });
 
     liUsuario.appendChild(ulPeliculas);
-    contenedor.appendChild(liUsuario);
+    contenedorPeliculas.appendChild(liUsuario);
   });
 }
 
-async function borrarPelicula(pelicula) {
-  const deletePeliculaUrl = `http://localhost:8080/listas?pelicula=${pelicula}`;
+async function borrarPelicula(pelicula, liPelicula) {
+  const DELETE_PELICULA_URL = `http://localhost:8080/listas?pelicula=${pelicula}`;
 
   try {
-    const res = await fetch(deletePeliculaUrl, {
+    const res = await fetch(DELETE_PELICULA_URL, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
+        Authorization: "Bearer " + TOKEN,
       },
     });
 
     if (res.ok) {
-      liPeli.remove();
+      liPelicula.remove();
       console.log("Película eliminada con éxito");
     } else {
       console.error("Error al eliminar la película");

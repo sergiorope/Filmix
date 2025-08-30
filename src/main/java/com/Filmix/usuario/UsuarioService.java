@@ -4,6 +4,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.NoSuchElementException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -15,6 +16,7 @@ import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -38,21 +40,22 @@ public class UsuarioService {
 
 	public String login(String correo, String password) throws Exception {
 
-		Usuario u = usuarioRepository.findByEmail(correo);
+		Usuario usuario = usuarioRepository.findByEmail(correo)
+				.orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
-		if (!checkPass(password, u.getPassword())) {
+		if (!checkPass(password, usuario.getPassword())) {
 
 			throw new AuthenticationException("Error en al loguearse");
 		}
 
-		return generateToken(converToDTO(u));
+		return generateToken(converToDTO(usuario));
 
 	}
 
-	public UsuarioDTO obtenerUsuario() {
+	public UsuarioDTO findUser() {
 
-		return usuarioRepository.findById(obtenerClaims().get("id", Integer.class)).map(usuario -> converToDTO(usuario))
-				.orElseThrow();
+		return usuarioRepository.findById(getCurrentUser().getId()).map(usuario -> converToDTO(usuario))
+				.orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
 	}
 
@@ -62,10 +65,16 @@ public class UsuarioService {
 
 	}
 
-	private Claims obtenerClaims() {
+	private Usuario getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Claims claims = (Claims) authentication.getPrincipal();
 
-		return (Claims) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Integer userId = claims.get("id", Integer.class);
 
+		Usuario user = usuarioRepository.findById(userId)
+				.orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+
+		return user;
 	}
 
 	private String generateToken(UsuarioDTO usuario) {

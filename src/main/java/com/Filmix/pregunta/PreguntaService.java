@@ -19,33 +19,17 @@ public class PreguntaService {
 
 	public List<PreguntaDTO> findAll() {
 
-		List<Pregunta> QuestionList= preguntaRepository.findAllPage(PageRequest.of(0, 5));
-		
-		 return QuestionList.stream()
-				 .map(p -> converToDTO(p))
-				 .toList();
-		
-		
+		return preguntaRepository.findAllPage(PageRequest.of(0, 5)).stream().map(p -> converToDTO(p)).toList();
 
 	}
-	
+
 	public PreguntaDTO converToDTO(Pregunta pregunta) {
-	    List<RespuestaDTO> QuestionList = pregunta.getListaRespuestas()
-	            .stream()
-	            .map(r -> new RespuestaDTO(
-	                    r.getId(),
-	                    r.getNombre(),
-	                    r.getPregunta().getId(), 
-	                    r.getListaCategorias()
-	                             .stream()
-	                             .map(Categoria::getId) 
-	                             .collect(Collectors.toList())
-	            ))
-	            .collect(Collectors.toList());
+		List<RespuestaDTO> QuestionList = pregunta.getListaRespuestas().stream()
+				.map(r -> new RespuestaDTO(r.getId(), r.getNombre(), r.getPregunta().getId(),
+						r.getListaCategorias().stream().map(Categoria::getId).collect(Collectors.toList())))
+				.collect(Collectors.toList());
 
-	    return new PreguntaDTO(pregunta.getId(), pregunta.getFrase(), QuestionList);
+		return new PreguntaDTO(pregunta.getId(), pregunta.getFrase(), QuestionList);
 	}
-
-
 
 }

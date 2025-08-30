@@ -1,80 +1,64 @@
-const getQuestions = "http://localhost:8080/preguntas";
+const GET_QUESTIONS_URL = "http://localhost:8080/preguntas";
+const GRAPHQL_URL = "http://localhost:8080/graphql";
 
-const CategoriasIds = [];
-
+const categoriaIds = [];
 const mapaIndice = new Map();
 const mapaRespuestas = new Map();
 
 const tokenSession = sessionStorage.getItem("token");
 
-console.log(tokenSession);
-
 const getPreguntas = async () => {
   try {
-    if (tokenSession == null) {
-      throw new Error("El token es nulo");
-    }
+    if (!tokenSession) throw new Error("El token es nulo");
 
-    const res = await fetch(getQuestions, {
+    const res = await fetch(GET_QUESTIONS_URL, {
       method: "GET",
       headers: { Authorization: "Bearer " + tokenSession },
     });
 
-    if (res === null) {
-      console.log("no hay");
-    }
-
     const response = await res.json();
     let contador = 1;
 
-    response.forEach((e) => {
-      mapaIndice.set(contador, e);
+    response.forEach((pregunta) => {
+      mapaIndice.set(contador, pregunta);
       contador++;
     });
 
     console.log(mapaIndice);
   } catch (error) {
-    console.log("Error al obtener películas:", error);
+    console.error("Error al obtener preguntas:", error);
     throw error;
   }
 };
 
 const getPeliculaRecomendada = async (ids) => {
   try {
-    const urlGraphQL = `http://localhost:8080/graphql`;
-
     const query = `
-{
-  getRecommended(ids: [${ids
-    .map((id) => `"${id}"`)
-    .join(",")}]) {
-    id
-    nombre
-    imagen
-  }
-}
-`;
+    {
+      getRecommended(ids: [${ids.map((id) => `"${id}"`).join(",")}]) {
+        id
+        nombre
+        imagen
+      }
+    }
+    `;
 
-    const res = await fetch(urlGraphQL, {
+    const res = await fetch(GRAPHQL_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + tokenSession,
       },
-      body: JSON.stringify({
-        query,
-      }),
+      body: JSON.stringify({ query }),
     });
 
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
-    }
+    if (!res.ok) throw new Error("Network response was not ok");
 
     const responseRecommended = await res.json();
     console.log("Película recomendada:", responseRecommended);
     return responseRecommended;
   } catch (error) {
-    console.log("Error al obtener películas:", error);
+    console.error("Error al obtener películas:", error);
   }
 };
 
@@ -82,8 +66,7 @@ async function crearModal() {
   try {
     await getPreguntas();
   } catch (error) {
-    console.log("Error al obtener preguntas desde el click:", error);
-
+    console.error("Error al obtener preguntas desde el click:", error);
     throw error;
   }
 
@@ -102,8 +85,8 @@ async function crearModal() {
   closeModal.className = "close";
   closeModal.textContent = "×";
 
-  const titulo = document.createElement("h2");
-  titulo.id = "tituloPregunta";
+  const tituloPregunta = document.createElement("h2");
+  tituloPregunta.id = "tituloPregunta";
 
   const form = document.createElement("form");
   form.id = "recommendForm";
@@ -111,57 +94,6 @@ async function crearModal() {
   const divOptions = document.createElement("div");
   divOptions.className = "ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3";
   divOptions.id = "options";
-
-  function renderOptions() {
-    detallesEntrada();
-
-    btnFinish.disabled = mapaRespuestas.size < mapaIndice.size;
-
-    divOptions.innerHTML = "";
-
-    const pregunta = mapaIndice.get(indiceActual);
-    if (!pregunta) {
-      console.error("No existe la pregunta para el índice:", indiceActual);
-      return;
-    }
-
-    titulo.textContent = pregunta.frase;
-
-    const respuestaGuardada = mapaRespuestas.get(indiceActual);
-
-    pregunta.listaRespuestas.forEach((resp) => {
-      const label = document.createElement("label");
-      label.className = "options";
-      label.textContent = resp.nombre;
-
-      const input = document.createElement("input");
-      input.type = "radio";
-      input.name = "radio";
-      input.value = resp.nombre;
-
-      if (respuestaGuardada === resp) {
-        input.checked = true;
-      }
-
-      input.addEventListener("change", () => {
-        mapaRespuestas.set(indiceActual, resp);
-        btnFinish.disabled = mapaRespuestas.size < mapaIndice.size;
-
-        if (mapaRespuestas.size != mapaIndice.size) {
-          btnFinish.style.backgroundColor = "grey";
-        } else {
-          btnFinish.style.backgroundColor = "black";
-        }
-      });
-
-      const span = document.createElement("span");
-      span.className = "checkmark";
-
-      label.appendChild(input);
-      label.appendChild(span);
-      divOptions.appendChild(label);
-    });
-  }
 
   const divBtnContainer = document.createElement("div");
   divBtnContainer.className = "d-flex align-items-center pt-3";
@@ -183,69 +115,56 @@ async function crearModal() {
 
   const btnFinish = document.createElement("button");
   btnFinish.type = "button";
-  btnFinish.className = "btn btn-dark ";
+  btnFinish.className = "btn btn-dark";
   btnFinish.textContent = "Finish";
   btnFinish.disabled = true;
 
-  divBtnWrapper.appendChild(btnPrev);
-  divBtnWrapper.appendChild(btnNext);
-  divBtnWrapper.appendChild(btnFinish);
-  divBtnContainer.appendChild(divBtnWrapper);
+  divBtnWrapper.append(btnPrev, btnNext, btnFinish);
+  divBtnContainer.append(divBtnWrapper);
+  form.append(divOptions, divBtnContainer);
+  modalContent.append(closeModal, tituloPregunta, form);
+  modal.append(modalContent);
+  document.body.append(modal);
 
-  form.appendChild(divOptions);
-  form.appendChild(divBtnContainer);
+  function renderOptions() {
+    detallesEntrada();
+    btnFinish.disabled = mapaRespuestas.size < mapaIndice.size;
+    divOptions.innerHTML = "";
 
-  modalContent.appendChild(closeModal);
-  modalContent.appendChild(titulo);
-  modalContent.appendChild(form);
-
-  modal.appendChild(modalContent);
-  document.body.appendChild(modal);
-
-  renderOptions();
-
-  closeModal.addEventListener("click", () => modal.remove());
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) modal.remove();
-  });
-
-  btnNext.addEventListener("click", () => {
-    if (indiceActual < mapaIndice.size) {
-      indiceActual++;
-      renderOptions();
-              btnPrev.style.backgroundColor = "black";
-
-      btnPrev.disabled = false;
-      if (indiceActual === mapaIndice.size) {
-        btnNext.disabled = true;
-
-        btnNext.style.backgroundColor = "grey";
-      } else if (indiceActual != 1) {
-      
-       
-      }
+    const pregunta = mapaIndice.get(indiceActual);
+    if (!pregunta) {
+      console.error("No existe la pregunta para el índice:", indiceActual);
+      return;
     }
-  });
 
-  btnPrev.addEventListener("click", () => {
-    if (indiceActual > 1) {
-      indiceActual--;
-      renderOptions();
-                    btnNext.style.backgroundColor = "black";
+    tituloPregunta.textContent = pregunta.frase;
+    const respuestaGuardada = mapaRespuestas.get(indiceActual);
 
-      btnNext.disabled = false;
-      if (indiceActual === 1) {
-        btnPrev.disabled = true;
+    pregunta.listaRespuestas.forEach((respuesta) => {
+      const label = document.createElement("label");
+      label.className = "options";
+      label.textContent = respuesta.nombre;
 
-        
-        btnPrev.style.backgroundColor = "grey";
-      } else if (indiceActual != mapaIndice.size) {
-        btnNext.style.backgroundColor = "black";
-      }
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "radio";
+      input.value = respuesta.nombre;
+      if (respuestaGuardada === respuesta) input.checked = true;
 
-      console.log(mapaIndice.size);
-    }
-  });
+      input.addEventListener("change", () => {
+        mapaRespuestas.set(indiceActual, respuesta);
+        btnFinish.disabled = mapaRespuestas.size < mapaIndice.size;
+        btnFinish.style.backgroundColor =
+          mapaRespuestas.size === mapaIndice.size ? "black" : "grey";
+      });
+
+      const span = document.createElement("span");
+      span.className = "checkmark";
+
+      label.append(input, span);
+      divOptions.append(label);
+    });
+  }
 
   function detallesEntrada() {
     if (indiceActual === 1) {
@@ -254,51 +173,58 @@ async function crearModal() {
     }
   }
 
-  btnFinish.addEventListener("click", async () => {
-    CategoriasIds.length = 0;
+  btnNext.addEventListener("click", () => {
+    if (indiceActual < mapaIndice.size) {
+      indiceActual++;
+      renderOptions();
+      btnPrev.disabled = false;
+      btnPrev.style.backgroundColor = "black";
+      if (indiceActual === mapaIndice.size) {
+        btnNext.disabled = true;
+        btnNext.style.backgroundColor = "grey";
+      }
+    }
+  });
 
-    mapaRespuestas.forEach((v) => {
-      CategoriasIds.push(v.listaCategorias);
+  btnPrev.addEventListener("click", () => {
+    if (indiceActual > 1) {
+      indiceActual--;
+      renderOptions();
+      btnNext.disabled = false;
+      btnNext.style.backgroundColor = "black";
+      if (indiceActual === 1) {
+        btnPrev.disabled = true;
+        btnPrev.style.backgroundColor = "grey";
+      }
+    }
+  });
+
+  btnFinish.addEventListener("click", async () => {
+    categoriaIds.length = 0;
+    mapaRespuestas.forEach((respuesta) => {
+      categoriaIds.push(respuesta.listaCategorias);
     });
 
-    console.log("IDs categorías:", CategoriasIds);
-
-    let pelicula = await getPeliculaRecomendada(CategoriasIds);
-
+    const pelicula = await getPeliculaRecomendada(categoriaIds);
     const peliculas = pelicula.data.getRecommended;
-
-    console.log("Respuesta de película recomendada:", pelicula);
 
     modal.remove();
     crearModalPelicula(peliculas);
+  });
 
-    btnPrev.disabled = false;
-    btnNext.disabled = false;
-    btnFinish.disabled = false;
+  renderOptions();
+
+  closeModal.addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.remove();
   });
 }
 
-async function crearModalPelicula(pelicula) {
+async function crearModalPelicula(peliculas) {
   const modal = document.createElement("div");
   modal.id = "modal";
   modal.className = "modal";
   modal.style.display = "flex";
-
-  const center = document.createElement("div");
-  center.className = "center";
-
-  const btn1 = document.createElement("div");
-  btn1.className = "btn-1";
-
-  const buttonAñadir = document.createElement("button");
-  buttonAñadir.style.cursor = "pointer";
-
-  const span = document.createElement("span");
-  span.textContent = "Añadir a la lista";
-
-  center.appendChild(btn1);
-  btn1.appendChild(buttonAñadir);
-  buttonAñadir.appendChild(span);
 
   const modalContent = document.createElement("div");
   modalContent.className = "modal-content-recommended";
@@ -308,80 +234,73 @@ async function crearModalPelicula(pelicula) {
   closeModal.className = "close";
   closeModal.textContent = "×";
 
-  const movies = document.createElement("ul");
-  movies.className = "movies-list";
+  const moviesList = document.createElement("ul");
+  moviesList.className = "movies-list";
 
   const idsPeliculas = [];
 
-  pelicula.forEach((e) => {
-    idsPeliculas.push(e.id);
-
-    console.log(e.id + "wdwdwdwdw");
+  peliculas.forEach((pelicula) => {
+    idsPeliculas.push(pelicula.id);
 
     const li = document.createElement("li");
     li.className = "recommended-item";
 
     const title = document.createElement("h4");
-    title.textContent = e.nombre || "Película sin título";
+    title.textContent = pelicula.nombre || "Película sin título";
 
     const img = document.createElement("img");
-    img.src = e.imagen || "images/default.jpg";
+    img.src = pelicula.imagen || "images/default.jpg";
     img.style.width = "50%";
 
     const desc = document.createElement("p");
-    desc.textContent = e.descripcion || "";
+    desc.textContent = pelicula.descripcion || "";
 
     const linkWrapper = document.createElement("div");
     linkWrapper.className = "wrapper";
 
-    li.appendChild(title);
-    li.appendChild(img);
-    li.appendChild(desc);
-    li.appendChild(linkWrapper);
-
-    movies.appendChild(li);
-    movies.appendChild(center);
+    li.append(title, img, desc, linkWrapper);
+    moviesList.append(li);
   });
 
-  modalContent.appendChild(movies);
+  const center = document.createElement("div");
+  center.className = "center";
 
-  modal.appendChild(modalContent);
-  document.body.appendChild(modal);
+  const btnWrapper = document.createElement("div");
+  btnWrapper.className = "btn-1";
+
+  const btnAñadir = document.createElement("button");
+  btnAñadir.style.cursor = "pointer";
+
+  const span = document.createElement("span");
+  span.textContent = "Añadir a la lista";
+
+  btnWrapper.append(btnAñadir);
+  btnAñadir.append(span);
+  center.append(btnWrapper);
+
+  modalContent.append(closeModal, moviesList, center);
+  modal.append(modalContent);
+  document.body.append(modal);
 
   closeModal.addEventListener("click", () => modal.remove());
   modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.remove();
   });
 
-  buttonAñadir.addEventListener("click", async (e) => {
+  btnAñadir.addEventListener("click", async (e) => {
     e.preventDefault();
-
-    await añadiraLista(idsPeliculas);
-    idsPeliculas.splice();
+    await añadirAPeliculasLista(idsPeliculas);
+    idsPeliculas.length = 0;
     location.reload();
   });
 }
 
-const btn = document.querySelector(".link1");
-btn.addEventListener("click", async (e) => {
-  e.preventDefault();
-
-  if (!tokenSession) {
-    window.location.href = "../login.html";
-  }
+async function añadirAPeliculasLista(ids) {
+  const queryParams = ids.map((id) => `peliculasIds=${id}`).join("&");
+  const postUrl = `http://localhost:8080/listas?${queryParams}`;
 
   try {
-    await crearModal();
-  } catch (error) {
-    console.log("Error al obtener al crear el modal:", error);
-  }
-});
-
-async function añadiraLista(ids) {
-const queryParams = ids.map(id => `peliculasIds=${id}`).join("&");
-const postAñadiraLista = `http://localhost:8080/listas?${queryParams}`;
-  try {
-    const res = await fetch(postAñadiraLista, {
+    const res = await fetch(postUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -390,10 +309,22 @@ const postAñadiraLista = `http://localhost:8080/listas?${queryParams}`;
     });
 
     const response = await res.json();
-
     console.log(response);
   } catch (error) {
-    console.log("Error al añadir peliculas a la lista:", error);
+    console.error("Error al añadir peliculas a la lista:", error);
     throw error;
   }
 }
+
+const btnRecomendar = document.querySelector(".link1");
+btnRecomendar.addEventListener("click", async (e) => {
+  e.preventDefault();
+  if (!tokenSession) {
+    window.location.href = "../login.html";
+  }
+  try {
+    await crearModal();
+  } catch (error) {
+    console.error("Error al crear el modal:", error);
+  }
+});

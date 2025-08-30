@@ -1,6 +1,7 @@
 package com.Filmix.lista;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,25 +35,20 @@ public class ListaService {
 	}
 
 	public ListaDTO addFilms(List<Integer> peliculasIds) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Claims claims = (Claims) authentication.getPrincipal();
 
-		Integer userId = claims.get("id", Integer.class);
+		Lista list = getCurrentUser().getLista();
 
-		Usuario user = usuarioRepository.findById(userId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-		Lista list = user.getLista();
-
-		List<Pelicula> actualFilms = list.getListaPeliculas();
+		List<Pelicula> actualUserFilms = list.getListaPeliculas();
 
 		List<Pelicula> newFilms = peliculasIds.stream()
-				.filter(id -> actualFilms.stream().noneMatch(p -> p.getId() == id))
-				.map(id -> peliculaRepository.findById(id).orElseThrow(() -> new RuntimeException("Película no encontrada: " + id)))
+				.filter(id -> actualUserFilms.stream().noneMatch(p -> p.getId() == id))
+				.map(id -> peliculaRepository.findById(id)
+						.orElseThrow(() -> new NoSuchElementException("Película no encontrada: " + id)))
 				.collect(Collectors.toList());
 
-		actualFilms.addAll(newFilms);
+		actualUserFilms.addAll(newFilms);
 
-		list.setListaPeliculas(actualFilms);
+		list.setListaPeliculas(actualUserFilms);
 
 		listaRepository.save(list);
 
@@ -66,10 +62,11 @@ public class ListaService {
 
 		Integer userId = claims.get("id", Integer.class);
 
-		
-		System.out.println(peliculaRepository.findByName(pelicula).getId() + "despues: "+listaRepository.findByUsuarioId(userId).getId() );
-		
-		listaRepository.deleteFilm(peliculaRepository.findByName(pelicula).getId(), listaRepository.findByUsuarioId(userId).getId());
+		listaRepository.deleteFilm(
+				peliculaRepository.findByName(pelicula)
+						.orElseThrow(() -> new NoSuchElementException("Película no encontrada")).getId(),
+				listaRepository.findByUsuarioId(userId)
+						.orElseThrow(() -> new NoSuchElementException("Usuario no encontrado")).getId());
 
 	}
 
@@ -79,6 +76,18 @@ public class ListaService {
 
 		return new ListaDTO(lista.getId(), lista.getUsuario().getNombre(), listaPeliculas);
 
+	}
+
+	private Usuario getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Claims claims = (Claims) authentication.getPrincipal();
+
+		Integer userId = claims.get("id", Integer.class);
+
+		Usuario user = usuarioRepository.findById(userId)
+				.orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
+
+		return user;
 	}
 
 }

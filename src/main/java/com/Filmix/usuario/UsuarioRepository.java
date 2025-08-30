@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
 	@Query("SELECT u FROM Usuario u WHERE u.correo = ?1")
-	public Usuario findByEmail(String correo);
+	public Optional<Usuario> findByEmail(String correo);
 	
 
 
