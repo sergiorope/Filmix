@@ -1,4 +1,5 @@
 const GET_FILMS_URL = "http://localhost:8080/peliculas";
+const GET_CATEGORIES_URL = "http://localhost:8080/categorias";
 const GET_USER_URL = "http://localhost:8080/graphql";
 const TOKEN = sessionStorage.getItem("token");
 
@@ -70,24 +71,47 @@ const getPeliculas = async () => {
   }
 };
 
-function opcionesCategorias(){
+async function opcionesCategorias() {
+  try {
+    const res = await fetch(GET_CATEGORIES_URL, {
+      method: "GET",
+    });
 
-  const span = document.querySelector(".list")
+    const response = await res.json();
 
-  const div = document.createElement("div");
-div.className = "box";
+    const span = document.querySelector(".list");
 
-const select = document.createElement("select");
+    const div = document.createElement("div");
+    div.className = "box";
 
-for (let i = 1; i <= 5; i++) {
-    const option = document.createElement("option");
-    option.textContent = `Option ${i}`;
-    select.appendChild(option);
+    const select = document.createElement("select");
+    select.className = "categorySelect";
+
+    response.forEach((item) => {
+      const option = document.createElement("option");
+      option.textContent = `${item.nombre}`;
+      option.value = item.id;
+      select.appendChild(option);
+    });
+
+    div.appendChild(select);
+
+    span.appendChild(div);
+
+    seleccionarEvento(select);
+  } catch (error) {
+    console.error("Error al obtener preguntas:", error);
+    throw error;
+  }
 }
 
-div.appendChild(select);
+function seleccionarEvento(categorySelect) {
+  categorySelect.addEventListener("change", function () {
+    const opcionSeleccionada =
+      categorySelect.options[categorySelect.selectedIndex];
 
-span.appendChild(div);
+    console.log(opcionSeleccionada.value);
+  });
 }
 
 async function getUsuarioNombre() {

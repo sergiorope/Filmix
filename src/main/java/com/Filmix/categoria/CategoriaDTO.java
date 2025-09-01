@@ -28,8 +28,7 @@ public class CategoriaDTO {
 
 	private int id;
 	private String nombre;
-	private List<String> listaPeliculas = new ArrayList<>();
-	private List<String> listaRespuestas = new ArrayList<>();
+
 
 
 
