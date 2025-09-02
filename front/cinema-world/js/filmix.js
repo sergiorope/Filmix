@@ -21,46 +21,7 @@ const getPeliculas = async () => {
       return;
     }
 
-    response.forEach((pelicula, index) => {
-      const li = document.createElement("li");
-
-      if ((index + 1) % 3 === 0) {
-        li.classList.add("last");
-      }
-
-      const title = document.createElement("h4");
-      title.textContent = pelicula.nombre || "Película sin título";
-
-      const img = document.createElement("img");
-      img.src = pelicula.imagen || "images/default.jpg";
-      img.style.width = "50%";
-
-      const desc = document.createElement("p");
-      desc.textContent = pelicula.sinopsis || "Sin descripción";
-      desc.className = "descripcion";
-
-      const linkWrapper = document.createElement("div");
-      linkWrapper.className = "wrapper";
-
-      const a = document.createElement("a");
-      a.href = "#";
-      a.className = "link2";
-
-      const span1 = document.createElement("span");
-      const span2 = document.createElement("span");
-      span2.textContent = "Read More";
-
-      span1.appendChild(span2);
-      a.appendChild(span1);
-      linkWrapper.appendChild(a);
-
-      li.appendChild(title);
-      li.appendChild(img);
-      li.appendChild(desc);
-      li.appendChild(linkWrapper);
-
-      movies.appendChild(li);
-    });
+    mostrarPeliculas(movies, response);
 
     const clear = document.createElement("li");
     clear.className = "clear";
@@ -106,11 +67,28 @@ async function opcionesCategorias() {
 }
 
 function seleccionarEvento(categorySelect) {
-  categorySelect.addEventListener("change", function () {
+  categorySelect.addEventListener("change", async function () {
     const opcionSeleccionada =
       categorySelect.options[categorySelect.selectedIndex];
 
-    console.log(opcionSeleccionada.value);
+    const GET_BY_CATEGORY_URL = `http://localhost:8080/peliculas/by-category?categoriaId=${opcionSeleccionada.value}`;
+
+    const movies = document.querySelector(".movies");
+
+    movies.innerHTML = "";
+
+    try {
+      const res = await fetch(GET_BY_CATEGORY_URL, {
+        method: "GET",
+      });
+
+      const response = await res.json();
+
+      mostrarPeliculas(movies, response);
+    } catch (error) {
+      console.error("Error al obtener preguntas:", error);
+      throw error;
+    }
   });
 }
 
@@ -142,6 +120,49 @@ function mostrarBienvenida() {
 
   getUsuarioNombre().then((value) => {
     msgBienvenida.textContent = "¡Bienvenido " + value + "!";
+  });
+}
+
+function mostrarPeliculas(movies, response) {
+  response.forEach((pelicula, index) => {
+    const li = document.createElement("li");
+
+    if ((index + 1) % 3 === 0) {
+      li.classList.add("last");
+    }
+
+    const title = document.createElement("h4");
+    title.textContent = pelicula.nombre || "Película sin título";
+
+    const img = document.createElement("img");
+    img.src = pelicula.imagen || "images/default.jpg";
+    img.style.width = "50%";
+
+    const desc = document.createElement("p");
+    desc.textContent = pelicula.sinopsis || "Sin descripción";
+    desc.className = "descripcion";
+
+    const linkWrapper = document.createElement("div");
+    linkWrapper.className = "wrapper";
+
+    const a = document.createElement("a");
+    a.href = "#";
+    a.className = "link2";
+
+    const span1 = document.createElement("span");
+    const span2 = document.createElement("span");
+    span2.textContent = "Read More";
+
+    span1.appendChild(span2);
+    a.appendChild(span1);
+    linkWrapper.appendChild(a);
+
+    li.appendChild(title);
+    li.appendChild(img);
+    li.appendChild(desc);
+    li.appendChild(linkWrapper);
+
+    movies.appendChild(li);
   });
 }
 

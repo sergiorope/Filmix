@@ -23,6 +23,12 @@ public class PeliculaController {
 	public ResponseEntity<List<PeliculaDTO>> getFilms() {
 
 		return ResponseEntity.ok(peliculaService.findAll());
+	}
+
+	@GetMapping("/by-category")
+	public ResponseEntity<List<PeliculaDTO>> getByCategories(@RequestParam int categoriaId) {
+
+		return ResponseEntity.ok(peliculaService.findByCategory(categoriaId));
 
 	}
 

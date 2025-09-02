@@ -55,6 +55,7 @@ public class FilmixApplication {
 	        .authorizeHttpRequests(auth -> auth
 	            .requestMatchers("/usuario/login").permitAll()
 	            .requestMatchers("/peliculas").permitAll()
+	            .requestMatchers("/peliculas/by-category").permitAll()
 	            .requestMatchers("/categorias").permitAll()
 	            .requestMatchers("/graphiql").permitAll()
 	            .anyRequest().authenticated() 
