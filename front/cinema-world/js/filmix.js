@@ -2,11 +2,11 @@ const GET_FILMS_URL = "http://localhost:8080/peliculas";
 const GET_CATEGORIES_URL = "http://localhost:8080/categorias";
 const GET_USER_URL = "http://localhost:8080/graphql";
 const TOKEN = sessionStorage.getItem("token");
+const movies = document.querySelector(".movies");
 
 const getPeliculas = async () => {
   try {
     const res = await fetch(GET_FILMS_URL, { method: "GET" });
-    const movies = document.querySelector(".movies");
 
     if (!res.ok) {
       mostrarError(movies);
@@ -48,6 +48,11 @@ async function opcionesCategorias() {
     const select = document.createElement("select");
     select.className = "categorySelect";
 
+    const optionTodas = document.createElement("option");
+    optionTodas.textContent = "Todas";
+    optionTodas.value = "all";
+    select.appendChild(optionTodas);
+
     response.forEach((item) => {
       const option = document.createElement("option");
       option.textContent = `${item.nombre}`;
@@ -71,23 +76,28 @@ function seleccionarEvento(categorySelect) {
     const opcionSeleccionada =
       categorySelect.options[categorySelect.selectedIndex];
 
-    const GET_BY_CATEGORY_URL = `http://localhost:8080/peliculas/by-category?categoriaId=${opcionSeleccionada.value}`;
+    if (opcionSeleccionada.value != "all") {
+      console.log("wasaaaa");
+      const GET_BY_CATEGORY_URL = `http://localhost:8080/peliculas/by-category?categoriaId=${opcionSeleccionada.value}`;
 
-    const movies = document.querySelector(".movies");
+      movies.innerHTML = "";
 
-    movies.innerHTML = "";
+      try {
+        const res = await fetch(GET_BY_CATEGORY_URL, {
+          method: "GET",
+        });
 
-    try {
-      const res = await fetch(GET_BY_CATEGORY_URL, {
-        method: "GET",
-      });
+        const response = await res.json();
 
-      const response = await res.json();
+        mostrarPeliculas(movies, response);
+      } catch (error) {
+        console.error("Error al obtener preguntas:", error);
+        throw error;
+      }
+    } else {
+      movies.innerHTML = "";
 
-      mostrarPeliculas(movies, response);
-    } catch (error) {
-      console.error("Error al obtener preguntas:", error);
-      throw error;
+      getPeliculas();
     }
   });
 }
