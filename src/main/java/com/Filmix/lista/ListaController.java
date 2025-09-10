@@ -22,9 +22,9 @@ public class ListaController {
 	ListaService listaService;
 
 	@GetMapping
-	public ResponseEntity<List<ListaDTO>> getList() {
+	public ResponseEntity<ListaDTO> getList() {
 
-		return ResponseEntity.ok(listaService.findAll());
+		return ResponseEntity.ok(listaService.findByUser());
 
 	}
 

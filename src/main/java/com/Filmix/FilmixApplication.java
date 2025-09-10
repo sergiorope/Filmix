@@ -1,11 +1,14 @@
 package com.Filmix;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -53,7 +56,7 @@ public class FilmixApplication {
 	        .csrf(csrf -> csrf.disable())
 	        .cors(cors -> {}) 
 	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/usuario/login").permitAll()
+	            .requestMatchers("/usuarios/login").permitAll()
 	            .requestMatchers("/peliculas").permitAll()
 	            .requestMatchers("/peliculas/by-category").permitAll()
 	            .requestMatchers("/categorias").permitAll()
@@ -87,7 +90,7 @@ public class FilmixApplication {
                         	
                             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
                             org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(auth);
-                            
+                           
                         }
                     } catch (Exception e) {
                     }
@@ -96,6 +99,10 @@ public class FilmixApplication {
             }
         };
     }
+    
+    
+    
+    
 	
 	
 	

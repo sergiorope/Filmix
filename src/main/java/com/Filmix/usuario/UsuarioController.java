@@ -11,19 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.jsonwebtoken.Claims;
 
-@RequestMapping("/usuario")
+@RequestMapping("/usuarios")
 @RestController
 public class UsuarioController {
-	
+
 	@Autowired
 	UsuarioService usuarioService;
-	
-	
+
 	@PostMapping("/login")
 	public ResponseEntity<String> login(@RequestBody UsuarioDTO usuario) throws Exception {
-	    return ResponseEntity.ok(usuarioService.login(usuario.getCorreo(), usuario.getPassword()));
+		return ResponseEntity.ok(usuarioService.login(usuario.getCorreo(), usuario.getPassword()));
 	}
-	
+
 	
 
 }

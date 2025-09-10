@@ -3,13 +3,23 @@ const GET_CATEGORIES_URL = "http://localhost:8080/categorias";
 const GET_USER_URL = "http://localhost:8080/graphql";
 const TOKEN = sessionStorage.getItem("token");
 const movies = document.querySelector(".movies");
+const recommendedFilmsBtn = document.querySelector(".recommended");
+const icons = document.getElementById("icons");
+
+recommendedFilmsBtn.addEventListener("click", () => {
+  if (!TOKEN) {
+    window.location.href = "../login.html";
+  } else {
+    window.location.href = "../peliculas-recomendadas.html";
+  }
+});
 
 const getPeliculas = async () => {
   try {
     const res = await fetch(GET_FILMS_URL, { method: "GET" });
 
     if (!res.ok) {
-      mostrarError(movies);
+      mostrarError(movies, "No hay películas actualmente");
     }
 
     const response = await res.json();
@@ -77,7 +87,6 @@ function seleccionarEvento(categorySelect) {
       categorySelect.options[categorySelect.selectedIndex];
 
     if (opcionSeleccionada.value != "all") {
-      console.log("wasaaaa");
       const GET_BY_CATEGORY_URL = `http://localhost:8080/peliculas/by-category?categoriaId=${opcionSeleccionada.value}`;
 
       movies.innerHTML = "";
@@ -95,11 +104,15 @@ function seleccionarEvento(categorySelect) {
         throw error;
       }
     } else {
-      movies.innerHTML = "";
+      limpiarContenido(movies);
 
       getPeliculas();
     }
   });
+}
+
+function limpiarContenido(contenido) {
+  contenido.innerHTML = "";
 }
 
 async function getUsuarioNombre() {
@@ -109,22 +122,22 @@ async function getUsuarioNombre() {
                     }
                   }`;
 
-  const resNombre = await fetch(GET_USER_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + TOKEN,
-    },
-    body: JSON.stringify({ query }),
-  });
+  try {
+    const resNombre = await fetch(GET_USER_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + TOKEN,
+      },
+      body: JSON.stringify({ query }),
+    });
 
-  const nombre = await resNombre.json();
-  return nombre.data.getUser.nombre;
+    const nombre = await resNombre.json();
+    return nombre.data.getUser.nombre;
+  } catch (error) {}
 }
 
 function mostrarBienvenida() {
-  const icons = document.getElementById("icons");
-
   const msgBienvenida = document.createElement("p");
   icons.appendChild(msgBienvenida);
 
@@ -167,25 +180,26 @@ function mostrarPeliculas(movies, response) {
     a.appendChild(span1);
     linkWrapper.appendChild(a);
 
-    li.appendChild(title);
-    li.appendChild(img);
-    li.appendChild(desc);
-    li.appendChild(linkWrapper);
+    li.append(title, img, desc, linkWrapper);
 
     movies.appendChild(li);
   });
 }
 
-function mostrarError(movies) {
+function mostrarError(div, msg) {
   const error = document.createElement("p");
-  error.textContent = "No hay ninguna pelicula actualmente.";
+  error.textContent = msg;
   error.style.color = "red";
   error.style.fontWeight = "bold";
   error.style.marginTop = "10px";
-  movies.appendChild(error);
-  throw new Error("Network response was not ok");
+  div.appendChild(error);
 }
 
 getPeliculas();
 opcionesCategorias();
-mostrarBienvenida();
+
+if (TOKEN) {
+  mostrarBienvenida();
+} else {
+  mostrarError(icons, "Invitado");
+}

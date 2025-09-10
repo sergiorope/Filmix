@@ -31,6 +31,10 @@ select {
 	
 }
 
+.recommended {
+  cursor: pointer;
+}
+
 fieldset {
 	border: 0;
 }
@@ -39,6 +43,13 @@ p {
 	margin: 0;
 	padding: 0;
 }
+
+#peliculas-list{
+
+	padding: 1%;
+}
+
+
 
 img {
 	border: 0;
@@ -346,7 +357,7 @@ h4 {
 
 .link1 {
 	display: block;
-
+	margin-top: 2%;
 	float: left;
 	background: url(../images/link1-right.png) no-repeat right top;
 	color: #fff;
@@ -677,6 +688,11 @@ a {
 	font-size: 16px;
 }
 
+.lipelicula{
+
+	margin: 2%;
+	font-size: larger
+}
 
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');

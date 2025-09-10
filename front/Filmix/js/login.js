@@ -1,10 +1,9 @@
 const inputEmail = document.getElementById("email");
 const inputPassword = document.getElementById("password");
 const loginDiv = document.querySelector(".inset");
+const LOGIN_URL = "http://localhost:8080/usuarios/login";
 
-const LOGIN_URL = "http://localhost:8080/usuario/login";
-
-const loginWithToken = async (email, password) => {
+const login = async (email, password) => {
   try {
     const res = await fetch(LOGIN_URL, {
       method: "POST",
@@ -15,7 +14,10 @@ const loginWithToken = async (email, password) => {
     });
 
     if (!res.ok) {
+  
       mostrarError(loginDiv);
+
+      return null;
     }
 
     const token = await res.text();
@@ -32,7 +34,7 @@ const loginButton = document.querySelector(".login");
 loginButton.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  const tokenResponse = await loginWithToken(inputEmail.value, inputPassword.value);
+  const tokenResponse = await login(inputEmail.value, inputPassword.value);
 
   if (!tokenResponse) {
     console.error("Error en las credenciales");
@@ -49,5 +51,10 @@ function mostrarError(div) {
   error.style.fontWeight = "bold";
   error.style.marginTop = "10px";
   div.appendChild(error);
+
+
+        setTimeout(() => {
+        error.textContent = "";
+      }, 1500);
   throw new Error("Network response was not ok");
 }

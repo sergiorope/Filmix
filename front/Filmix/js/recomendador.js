@@ -1,19 +1,17 @@
 const GET_QUESTIONS_URL = "http://localhost:8080/preguntas";
 const GRAPHQL_URL = "http://localhost:8080/graphql";
-
-const categoriaIds = [];
+const idsPeliculas = [];
 const mapaIndice = new Map();
 const mapaRespuestas = new Map();
-
-const tokenSession = sessionStorage.getItem("token");
+const categoriaIds = [];
 
 const getPreguntas = async () => {
   try {
-    if (!tokenSession) throw new Error("El token es nulo");
+    if (!TOKEN) throw new Error("El token es nulo");
 
     const res = await fetch(GET_QUESTIONS_URL, {
       method: "GET",
-      headers: { Authorization: "Bearer " + tokenSession },
+      headers: { Authorization: "Bearer " + TOKEN },
     });
 
     const response = await res.json();
@@ -47,7 +45,7 @@ const getPeliculaRecomendada = async (ids) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + tokenSession,
+        Authorization: "Bearer " + TOKEN,
       },
       body: JSON.stringify({ query }),
     });
@@ -129,7 +127,8 @@ async function crearModal() {
   function renderOptions() {
     detallesEntrada();
     btnFinish.disabled = mapaRespuestas.size < mapaIndice.size;
-    divOptions.innerHTML = "";
+
+    limpiarContenido(divOptions);
 
     const pregunta = mapaIndice.get(indiceActual);
     if (!pregunta) {
@@ -169,6 +168,9 @@ async function crearModal() {
   function detallesEntrada() {
     if (indiceActual === 1) {
       btnPrev.style.backgroundColor = "grey";
+    }
+
+    if (mapaRespuestas.size != mapaIndice.size) {
       btnFinish.style.backgroundColor = "grey";
     }
   }
@@ -183,6 +185,10 @@ async function crearModal() {
         btnNext.disabled = true;
         btnNext.style.backgroundColor = "grey";
       }
+
+      if (mapaRespuestas.size === mapaIndice.size) {
+        btnFinish.style.backgroundColor = "black";
+      }
     }
   });
 
@@ -195,6 +201,9 @@ async function crearModal() {
       if (indiceActual === 1) {
         btnPrev.disabled = true;
         btnPrev.style.backgroundColor = "grey";
+      }
+      if (mapaRespuestas.size === mapaIndice.size) {
+        btnFinish.style.backgroundColor = "black";
       }
     }
   });
@@ -236,8 +245,6 @@ async function crearModalPelicula(peliculas) {
 
   const moviesList = document.createElement("ul");
   moviesList.className = "movies-list";
-
-  const idsPeliculas = [];
 
   peliculas.forEach((pelicula) => {
     idsPeliculas.push(pelicula.id);
@@ -304,7 +311,7 @@ async function añadirAPeliculasLista(ids) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + tokenSession,
+        Authorization: "Bearer " + TOKEN,
       },
     });
 
@@ -319,7 +326,7 @@ async function añadirAPeliculasLista(ids) {
 const btnRecomendar = document.querySelector(".link1");
 btnRecomendar.addEventListener("click", async (e) => {
   e.preventDefault();
-  if (!tokenSession) {
+  if (!TOKEN) {
     window.location.href = "../login.html";
   }
   try {
@@ -328,3 +335,7 @@ btnRecomendar.addEventListener("click", async (e) => {
     console.error("Error al crear el modal:", error);
   }
 });
+
+function limpiarContenido(contenido) {
+  contenido.innerHTML = "";
+}

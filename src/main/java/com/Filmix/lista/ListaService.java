@@ -29,9 +29,10 @@ public class ListaService {
 	@Autowired
 	PeliculaRepository peliculaRepository;
 
-	public List<ListaDTO> findAll() {
+	public ListaDTO findByUser() {
 
-		return listaRepository.findAll().stream().map(l -> converToDTO(l)).toList();
+		return listaRepository.findByUsuarioId(getCurrentUser().getId()).map(l -> converToDTO(l))
+				.orElseThrow(() -> new NoSuchElementException("Lista por ese usuario no encontrada"));
 	}
 
 	public ListaDTO addFilms(List<Integer> peliculasIds) {
