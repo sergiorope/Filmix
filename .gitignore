@@ -1,33 +1,30 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Archivos de Eclipse
+/.classpath
+/.project
+/.settings/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Archivos compilados de Java
+/bin/
+/target/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
+# Archivos de configuración de Git
+*.log
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Archivos de sistema de Windows
+Thumbs.db
+.DS_Store
+*.exe
+*.dll
 
-### VS Code ###
-.vscode/
+# Archivos de base de datos y MySQL
+mysql_data/
+dbfiles/*.sock
+dbfiles/*.pid
+
+# Archivos de Docker
+docker-compose.override.yml
+*.env
+
+# Archivos temporales
+*.tmp
+*.swp

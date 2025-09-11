@@ -1,0 +1,6 @@
+#!/bin/bash
+mysql -u root -p$MYSQL_ROOT_PASSWORD <<EOF
+CREATE DATABASE IF NOT EXISTS filmix;
+GRANT ALL PRIVILEGES ON filmix.* TO 'mysql'@'%';
+FLUSH PRIVILEGES;
+EOF

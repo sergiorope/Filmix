@@ -76,7 +76,7 @@ function mostrarError(div) {
   error.style.fontWeight = "bold";
   error.style.marginTop = "10px";
   div.appendChild(error);
-  throw new Error("Network response was not ok");
+ 
 }
 
 obtenerLista().then((data) => {

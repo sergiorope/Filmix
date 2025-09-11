@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  ## SERVICIO DE BACK ##
+  product:
+    container_name: filmix-back
+    image: filmix-back:latest
+    restart: always
+    environment:
+      - JAVA_OPTS=-Xms256M -Xmx256M
+      - DB_HOST=mysql_db       
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=qwerty
+    depends_on:
+      - mysql_db
+
+  ## SERVICIO DE FRONT ##
+  customer:
+    container_name: filmix-front
+    image: filmix-front:latest
+    restart: always
+    environment:
+      - JAVA_OPTS=-Xms256M -Xmx256M
+      - DB_HOST=mysql_db        
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=qwerty
+    depends_on:
+      - mysql_db
+
+  ## SERVICIO DE BASE DE DATOS MYSQL ##
+  mysql_db:
+    container_name: mysql
+    image: mysql:oraclelinux9
+    volumes:
+      - ./dbfiles:/docker-entrypoint-initdb.d  
+      - ./mysql_data:/var/lib/mysql  
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: qwerty
+    ports:
+      - 3306:3306  
+
+  ## SERVICIO DE ADMINISTRADOR GRÁFICO ##
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: mysql_db      
+      PMA_USER: mysql
+      PMA_PASSWORD: qwerty
+    ports:
+      - 80:80
+    depends_on:
+      - mysql_db
+      
+  ## CONTENEDOR PARA INSERTS ##
+  seeder:
+    image: mysql:oraclelinux9
+    container_name: filmix-seeder
+    depends_on:
+      - mysql_db
+      - product
+    volumes:
+      - ./dbfiles:/docker-entrypoint-initdb.d
+    entrypoint: ["/docker-entrypoint-initdb.d/run-inserts.sh"]

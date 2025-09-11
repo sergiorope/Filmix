@@ -169,8 +169,9 @@ function mostrarPeliculas(movies, response) {
     linkWrapper.className = "wrapper";
 
     const a = document.createElement("a");
-    a.href = "#";
+
     a.className = "link2";
+    
 
     const span1 = document.createElement("span");
     const span2 = document.createElement("span");
