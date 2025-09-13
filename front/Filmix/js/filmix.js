@@ -1,5 +1,5 @@
 const GET_FILMS_URL = "http://localhost:8080/peliculas";
-const GET_CATEGORIES_URL = "http://localhost:8080/categorias";
+const GET_CATEGORIES_URL = "http://filmix-back:8080/categorias";
 const GET_USER_URL = "http://localhost:8080/graphql";
 const TOKEN = sessionStorage.getItem("token");
 const movies = document.querySelector(".movies");

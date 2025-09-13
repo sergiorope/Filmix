@@ -1,5 +1,3 @@
-USE filmix;
-
 -- ===========================================
 -- USUARIOS
 -- ===========================================
@@ -15,15 +13,10 @@ INSERT INTO usuario (id, nombre, correo, password) VALUES
 -- LISTAS
 -- ===========================================
 INSERT INTO lista (id, usuario_id) VALUES 
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5),
-(6, 6);
+(1, 1),(2, 2),(3, 3),(4, 4),(5, 5),(6, 6);
 
 -- ===========================================
--- PELÍCULAS con URLs de imagen
+-- PELÍCULAS
 -- ===========================================
 INSERT INTO pelicula (id, nombre, sinopsis, imagen) VALUES
 (1, 'Inception',        'Un ladrón que roba secretos corporativos a través de sueños.', 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_UX182_CR0,0,182,268_AL_.jpg'),
@@ -102,3 +95,4 @@ INSERT INTO pelicula_lista (lista_id, pelicula_id) VALUES
 INSERT INTO respuesta_categoria (respuesta_id, categoria_id) VALUES
 (1, 1),(2, 2),(3, 3),(4, 4),(5, 5),(6, 5),(6, 2),(7, 3),(8, 3),(9, 7),
 (11,4),(13,6),(15,8),(17,9);
+

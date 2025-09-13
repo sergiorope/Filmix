@@ -2,8 +2,10 @@ version: '3.8'
 
 services:
   ## SERVICIO DE BACK ##
-  product:
+  filmix-back:
     container_name: filmix-back
+    ports:
+    - 8080:8080
     image: filmix-back:latest
     restart: always
     environment:
@@ -12,34 +14,43 @@ services:
       - MYSQL_USER=mysql
       - MYSQL_PASSWORD=qwerty
     depends_on:
-      - mysql_db
+      mysql_db:
+        condition: service_healthy
 
-  ## SERVICIO DE FRONT ##
-  customer:
-    container_name: filmix-front
-    image: filmix-front:latest
-    restart: always
-    environment:
-      - JAVA_OPTS=-Xms256M -Xmx256M
-      - DB_HOST=mysql_db        
-      - MYSQL_USER=mysql
-      - MYSQL_PASSWORD=qwerty
-    depends_on:
-      - mysql_db
+    ## SERVICIO DE FRONT ##
+#  filmix-front:
+#    container_name: filmix-front
+#    ports:
+#      - 5000:80
+#    image: filmix-front:latest
+#    restart: always
+#    environment:
+#      - JAVA_OPTS=-Xms256M -Xmx256M
+#      - DB_HOST=mysql_db
+#      - MYSQL_USER=mysql
+#      - MYSQL_PASSWORD=qwerty
+#    depends_on:
+#      - mysql_db
+
 
   ## SERVICIO DE BASE DE DATOS MYSQL ##
   mysql_db:
     container_name: mysql
-    image: mysql:oraclelinux9
+    image: mysql:latest
     volumes:
-      - ./dbfiles:/docker-entrypoint-initdb.d  
       - ./mysql_data:/var/lib/mysql  
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: rootpassword      
       MYSQL_USER: mysql
       MYSQL_PASSWORD: qwerty
+      MYSQL_DATABASE: filmix
     ports:
-      - 3306:3306  
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   ## SERVICIO DE ADMINISTRADOR GRÁFICO ##
   phpmyadmin:
@@ -50,17 +61,6 @@ services:
       PMA_USER: mysql
       PMA_PASSWORD: qwerty
     ports:
-      - 80:80
+      - 5555:80
     depends_on:
       - mysql_db
-      
-  ## CONTENEDOR PARA INSERTS ##
-  seeder:
-    image: mysql:oraclelinux9
-    container_name: filmix-seeder
-    depends_on:
-      - mysql_db
-      - product
-    volumes:
-      - ./dbfiles:/docker-entrypoint-initdb.d
-    entrypoint: ["/docker-entrypoint-initdb.d/run-inserts.sh"]
