@@ -175,22 +175,29 @@ ol {
 }
 
 .movies {
-	width: 100%;
-
-	justify-content: center;
-	display: inline-block;
-
+  display: flex;
+  flex-wrap: wrap;       
+  justify-content: center; 
+  gap: 15px;             
+  padding: 0;
+  list-style: none;
 }
 
 .movies li {
-	float: left;
-	width: 286px;
-	margin-right: 15px;
-	text-align: center;
+
+	  width: 31%; 
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .movies li {
+    width: 48%; 
+  }
 }
 
 .movies li.last {
-	margin-right: 0;
+	  width: 32%; 
+  text-align: center;
 }
 
 .movies li.clear {

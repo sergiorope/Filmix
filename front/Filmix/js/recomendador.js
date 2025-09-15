@@ -211,8 +211,18 @@ async function crearModal() {
   btnFinish.addEventListener("click", async () => {
     categoriaIds.length = 0;
     mapaRespuestas.forEach((respuesta) => {
-      categoriaIds.push(respuesta.listaCategorias);
+
+      respuesta.listaCategorias.forEach(categoria => {
+
+        categoriaIds.push(categoria);
+        
+      });
+
+
+      
     });
+
+    console.log(categoriaIds);
 
     const pelicula = await getPeliculaRecomendada(categoriaIds);
     const peliculas = pelicula.data.getRecommended;
