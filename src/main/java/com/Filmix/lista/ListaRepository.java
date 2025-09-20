@@ -21,6 +21,8 @@ public interface ListaRepository extends JpaRepository<Lista, Integer> {
 
 	@Query("SELECT l FROM Lista l WHERE l.usuario.id = :usuarioId")
 	public Optional<Lista> findByUsuarioId(@Param("usuarioId") int usuarioId);
+	
+
 
 
 	@Modifying

@@ -175,7 +175,7 @@ function mostrarPeliculas(movies, response) {
 
     const span1 = document.createElement("span");
     const span2 = document.createElement("span");
-    span2.textContent = "Read More";
+    span2.textContent = "Leer más";
 
     span1.appendChild(span2);
     a.appendChild(span1);

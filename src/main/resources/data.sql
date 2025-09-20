@@ -70,9 +70,6 @@ INSERT IGNORE INTO categoria_pelicula (categoria_id, pelicula_id) VALUES
 (1, 1),(1, 2),(2, 2),(1, 3),(3, 3),(2, 4),(4, 4),(5, 5),(1, 5),
 (4, 6),(3, 7),(6, 7),(7, 8),(2, 8),(3, 9),(4, 9),(2, 10),(3, 10);
 
-INSERT IGNORE INTO pelicula_lista (lista_id, pelicula_id) VALUES
-(1, 1),(1, 2),(2, 3),(3, 4),(3, 6),(4, 5),(5, 7),(5, 8),(6, 9),(6, 10);
-
 INSERT IGNORE INTO respuesta_categoria (respuesta_id, categoria_id) VALUES
 (1, 1),
 (2, 2),
