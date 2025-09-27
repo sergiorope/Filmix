@@ -2,11 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
+  <meta charset="utf-8">
   <title>Filmix | Películas Recomendadas</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <link href="css/style.css" rel="stylesheet" type="text/css" />
-    <link rel="icon" href="images/favicon.png" type="image/png">
-  <script src="js/jquery-1.4.2.min.js" type="text/javascript"></script>
+  <link rel="icon" href="images/favicon.png" type="image/png">
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
   <script src="js/cufon-yui.js" type="text/javascript"></script>
   <script src="js/cufon-replace.js" type="text/javascript"></script>
   <script src="js/Gill_Sans_400.font.js" type="text/javascript"></script>
@@ -54,6 +61,19 @@
             <h3 class="titulo1">Mi <span>Lista de Películas</span></h3>
             <ul id="peliculas-list">
             </ul>
+            <table id="miTabla">
+              <thead>
+                <tr>
+                  <th>Películas Favoritas</th>
+                  <th>Eliminar</th>
+                </tr>
+              </thead>
+              <tbody class="tbody">
+                
+              </tbody>
+            </table>
+
+        
           </div>
 
         </div>
@@ -77,6 +97,8 @@
 
   <script type="text/javascript"> Cufon.now(); </script>
   <script src="js/peliculas-fav.js"></script>
+
+
 </body>
 
 </html>

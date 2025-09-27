@@ -195,6 +195,18 @@ ol {
   }
 }
 
+.deleteButton{
+
+	cursor: pointer;
+		text-align: center;
+
+}
+
+.tdPelicula{
+
+	text-align: center;
+}
+
 .movies li.last {
 	  width: 32%; 
   text-align: center;

@@ -2,6 +2,29 @@ const GET_LISTA_URL = "http://localhost:8080/listas";
 const TOKEN = sessionStorage.getItem("token");
 const contenedorPeliculas = document.getElementById("peliculas-list");
 
+
+
+
+function generarTabla(listaPeliculasTabla){
+
+  const $tbody = $(".tbody");
+
+
+  listaPeliculasTabla.forEach(pelicula => {
+
+    const $tr = $("<tr>");
+
+    $("<td>").text(pelicula).addClass("tdPelicula").appendTo($tr)
+    $("<td>").addClass("deleteButton").text("❌").appendTo($tr)
+    $tr.find(".deleteButton").click(() => borrarPelicula(pelicula, $tr));
+    $tr.appendTo($tbody);
+    
+  });
+  
+
+}
+
+
 async function obtenerLista() {
   const resLista = await fetch(GET_LISTA_URL, {
     method: "GET",
@@ -15,36 +38,6 @@ async function obtenerLista() {
   return lista;
 }
 
-function renderPeliculas(listaPeliculas) {
-  contenedorPeliculas.innerHTML = "";
-
-  const liUsuario = document.createElement("li");
-
-  const ulPeliculas = document.createElement("ul");
-
-  listaPeliculas.forEach((pelicula) => {
-    const liPelicula = document.createElement("li");
-    liPelicula.className = "lipelicula";
-    liPelicula.textContent = "- " + pelicula + " ";
-
-    const btnBorrar = document.createElement("button");
-    btnBorrar.textContent = "❌";
-    btnBorrar.classList.add("btn-borrar");
-
-    btnBorrar.addEventListener("click", () => {
-      console.log(pelicula);
-
-      borrarPelicula(pelicula, liPelicula);
-    });
-
-    liPelicula.appendChild(btnBorrar);
-
-    ulPeliculas.appendChild(liPelicula);
-  });
-
-  liUsuario.appendChild(ulPeliculas);
-  contenedorPeliculas.appendChild(liUsuario);
-}
 
 async function borrarPelicula(pelicula, liPelicula) {
   const DELETE_PELICULA_URL = `http://localhost:8080/listas?pelicula=${pelicula}`;
@@ -81,8 +74,11 @@ function mostrarError(div) {
 
 obtenerLista().then((data) => {
   if (data.listaPeliculas.length > 0) {
-    renderPeliculas(data.listaPeliculas);
+    generarTabla(data.listaPeliculas);
+    $('#miTabla').DataTable();
   } else {
     mostrarError(contenedorPeliculas);
   }
 });
+
+
