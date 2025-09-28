@@ -28,11 +28,11 @@ select {
 	font-size: 1em;
 	vertical-align: middle;
 	font-weight: normal;
-	
+
 }
 
 .recommended {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 fieldset {
@@ -44,7 +44,7 @@ p {
 	padding: 0;
 }
 
-#peliculas-list{
+#peliculas-list {
 
 	padding: 1%;
 }
@@ -175,41 +175,56 @@ ol {
 }
 
 .movies {
-  display: flex;
-  flex-wrap: wrap;       
-  justify-content: center; 
-  gap: 15px;             
-  padding: 0;
-  list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 15px;
+	padding: 0;
+	list-style: none;
 }
 
 .movies li {
 
-	  width: 31%; 
-  text-align: center;
-}
-
-@media (max-width: 900px) {
-  .movies li {
-    width: 48%; 
-  }
-}
-
-.deleteButton{
-
-	cursor: pointer;
-		text-align: center;
-
-}
-
-.tdPelicula{
-
+	width: 31%;
 	text-align: center;
 }
 
+@media (max-width: 900px) {
+	.movies li {
+		width: 48%;
+	}
+}
+
+
+.dataTables_length {
+	margin: 1%;
+
+	
+}
+
+.dataTables_length select, label {
+
+	color: white;
+
+}
+
+
+.deleteButton {
+
+	cursor: pointer;
+	text-align: center;
+
+}
+
+.tdPelicula {
+
+	text-align: center;
+	
+}
+
 .movies li.last {
-	  width: 32%; 
-  text-align: center;
+	width: 32%;
+	text-align: center;
 }
 
 .movies li.clear {
@@ -236,7 +251,7 @@ ol {
 }
 
 .list {
-	
+
 	display: inline-block;
 	padding-bottom: 5%;
 }
@@ -707,7 +722,7 @@ a {
 	font-size: 16px;
 }
 
-.lipelicula{
+.lipelicula {
 
 	margin: 2%;
 	font-size: larger

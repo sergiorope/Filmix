@@ -75,7 +75,9 @@ function mostrarError(div) {
 obtenerLista().then((data) => {
   if (data.listaPeliculas.length > 0) {
     generarTabla(data.listaPeliculas);
-    $('#miTabla').DataTable();
+    $('#miTabla').DataTable({
+      ordering: true
+    });
   } else {
     mostrarError(contenedorPeliculas);
   }
